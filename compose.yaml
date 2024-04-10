@@ -1,10 +1,81 @@
+version: '3.8'
 services:
-  mysql:
+  customer_management_service:
+    build: ./customers-service
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=h2
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+
+  product_management_service:
+    build: ./products-service
+    ports:
+      - "8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=h2
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+
+  order_processing_service:
+    build: ./orders-service
+    ports:
+      - "8083:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=h2
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+
+  inventory_management_service:
+    build: ./inventory-service
+    ports:
+      - "8084:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=h2
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+
+  flower_store_service: # Aggregator service
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - customer_management_service
+      - product_management_service
+      - order_processing_service
+      - inventory_management_service
+
+  mysql_server:
     image: 'mysql:latest'
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      - MYSQL_DATABASE=flowerstore-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=secretpwd
+      - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
-      - '3306'
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.0
+    container_name: FlowersPhpMyAdmin
+    links:
+      - mysql_server
+    restart: always
+    ports:
+      - 5014:80
+    environment:
+      - PMA_ARBITRARY=1
+
+networks:
+  default:
+    name: flowerstore_network
