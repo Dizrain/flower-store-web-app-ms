@@ -12,7 +12,7 @@ logging:
 
 spring:
   datasource:
-    url: jdbc:mysql://mysql_server/products-db
+    url: jdbc:mysql://mysql4/products-db
     username: user
     password: secretpwd
 

@@ -50,12 +50,12 @@ services:
       - order_processing_service
       - inventory_management_service
 
-  mysql_server:
+  mysql1:
     image: 'mysql:latest'
     environment:
-      - MYSQL_DATABASE=flowerstore-db
+      - MYSQL_DATABASE=customers-db
       - MYSQL_USER=user
-      - MYSQL_PASSWORD=secretpwd
+      - MYSQL_PASSWORD=pwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
       - "3307:3306"
@@ -65,14 +65,92 @@ services:
       timeout: 5s
       retries: 10
 
-  phpmyadmin:
+  mysql2:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_DATABASE=inventory-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_ROOT_PASSWORD=rootpwd
+    ports:
+      - "3308:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mysql3:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_DATABASE=order-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_ROOT_PASSWORD=rootpwd
+    ports:
+      - "3309:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mysql4:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_DATABASE=products-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_ROOT_PASSWORD=rootpwd
+    ports:
+      - "3310:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin1:
     image: phpmyadmin:5.2.0
-    container_name: FlowersPhpMyAdmin
+    container_name: phpmyadmin1
     links:
-      - mysql_server
+      - mysql1
+    restart: always
+    ports:
+      - 5013:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  phpmyadmin2:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin2
+    links:
+      - mysql2
     restart: always
     ports:
       - 5014:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  phpmyadmin3:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin3
+    links:
+      - mysql3
+    restart: always
+    ports:
+      - 5015:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  phpmyadmin4:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin4
+    links:
+      - mysql4
+    restart: always
+    ports:
+      - 5016:80
     environment:
       - PMA_ARBITRARY=1
 
