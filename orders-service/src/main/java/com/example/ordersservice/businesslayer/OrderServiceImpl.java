@@ -1,14 +1,14 @@
-package com.example.flowerstorewebapp.orderprocessingsubdomain.businesslayer;
+package com.example.ordersservice.businesslayer;
 
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.Order;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.OrderIdentifier;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.OrderRepository;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.OrderStatus;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datamapperlayer.OrderRequestMapper;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datamapperlayer.OrderResponseMapper;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderRequestModel;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderResponseModel;
-import com.example.flowerstorewebapp.utils.exceptions.NotFoundException;
+import com.example.ordersservice.datalayer.Order;
+import com.example.ordersservice.datalayer.OrderIdentifier;
+import com.example.ordersservice.datalayer.OrderRepository;
+import com.example.ordersservice.datalayer.OrderStatus;
+import com.example.ordersservice.datamapperlayer.OrderRequestMapper;
+import com.example.ordersservice.datamapperlayer.OrderResponseMapper;
+import com.example.ordersservice.presentationlayer.OrderRequestModel;
+import com.example.ordersservice.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

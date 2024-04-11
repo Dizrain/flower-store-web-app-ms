@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.orderprocessingsubdomain.datamapperlayer;
+package com.example.ordersservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.Order;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderController;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.datalayer.Order;
+import com.example.ordersservice.presentationlayer.OrderController;
+import com.example.ordersservice.presentationlayer.OrderResponseModel;
 import org.mapstruct.*;
 import org.springframework.hateoas.Link;
 

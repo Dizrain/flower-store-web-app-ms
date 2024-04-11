@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer;
+package com.example.ordersservice.presentationlayer;
 
-import com.example.flowerstorewebapp.orderprocessingsubdomain.businesslayer.OrderService;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderRequestModel;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.businesslayer.OrderService;
+import com.example.ordersservice.presentationlayer.OrderRequestModel;
+import com.example.ordersservice.presentationlayer.OrderResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

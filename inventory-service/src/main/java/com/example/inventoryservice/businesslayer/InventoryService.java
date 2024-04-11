@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.inventorymanagementsubdomain.businesslayer;
+package com.example.inventoryservice.businesslayer;
 
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItem;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemRequestModel;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemResponseModel;
+import com.example.inventoryservice.datalayer.StockItem;
+import com.example.inventoryservice.presentationlayer.StockItemRequestModel;
+import com.example.inventoryservice.presentationlayer.StockItemResponseModel;
 
 import java.util.List;
 

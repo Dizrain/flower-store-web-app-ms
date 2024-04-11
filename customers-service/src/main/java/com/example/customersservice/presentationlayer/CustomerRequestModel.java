@@ -1,4 +1,4 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer;
+package com.example.customersservice.presentationlayer;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.datalayer;
+package com.example.customersservice.datalayer;
 
 import jakarta.persistence.Embeddable;
 import lombok.Getter;

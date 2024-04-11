@@ -1,13 +1,13 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.businesslayer;
+package com.example.productsservice.businesslayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.Category;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.CategoryIdentifier;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.CategoryRepository;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datamapperlayer.CategoryRequestMapper;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datamapperlayer.CategoryResponseMapper;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.CategoryRequestModel;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.CategoryResponseModel;
-import com.example.flowerstorewebapp.utils.exceptions.NotFoundException;
+import com.example.productsservice.datalayer.Category;
+import com.example.productsservice.datalayer.CategoryIdentifier;
+import com.example.productsservice.datalayer.CategoryRepository;
+import com.example.productsservice.datamapperlayer.CategoryRequestMapper;
+import com.example.productsservice.datamapperlayer.CategoryResponseMapper;
+import com.example.productsservice.presentationlayer.CategoryRequestModel;
+import com.example.productsservice.presentationlayer.CategoryResponseModel;
+import com.example.productsservice.utils.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

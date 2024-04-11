@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.orderprocessingsubdomain.businesslayer;
+package com.example.ordersservice.businesslayer;
 
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.Order;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderRequestModel;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.datalayer.Order;
+import com.example.ordersservice.presentationlayer.OrderRequestModel;
+import com.example.ordersservice.presentationlayer.OrderResponseModel;
 
 import java.util.List;
 

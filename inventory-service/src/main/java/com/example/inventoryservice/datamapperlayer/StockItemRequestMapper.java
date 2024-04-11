@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.inventorymanagementsubdomain.datamapperlayer;
+package com.example.inventoryservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItem;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItemIdentifier;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemRequestModel;
+import com.example.inventoryservice.datalayer.StockItem;
+import com.example.inventoryservice.datalayer.StockItemIdentifier;
+import com.example.inventoryservice.presentationlayer.StockItemRequestModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

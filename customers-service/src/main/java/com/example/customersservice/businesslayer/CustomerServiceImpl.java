@@ -1,13 +1,14 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.businesslayer;
+package com.example.customersservice.businesslayer;
 
-import com.example.flowerstorewebapp.customermanagementsubdomain.datalayer.Customer;
-import com.example.flowerstorewebapp.customermanagementsubdomain.datalayer.CustomerIdentifier;
-import com.example.flowerstorewebapp.customermanagementsubdomain.datalayer.CustomerRepository;
-import com.example.flowerstorewebapp.customermanagementsubdomain.datamapperlayer.CustomerRequestMapper;
-import com.example.flowerstorewebapp.customermanagementsubdomain.datamapperlayer.CustomerResponseMapper;
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerRequestModel;
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerResponseModel;
-import com.example.flowerstorewebapp.utils.exceptions.NotFoundException;
+import com.example.customersservice.businesslayer.CustomerService;
+import com.example.customersservice.datalayer.Customer;
+import com.example.customersservice.datalayer.CustomerIdentifier;
+import com.example.customersservice.datalayer.CustomerRepository;
+import com.example.customersservice.datamapperlayer.CustomerRequestMapper;
+import com.example.customersservice.datamapperlayer.CustomerResponseMapper;
+import com.example.customersservice.presentationlayer.CustomerRequestModel;
+import com.example.customersservice.presentationlayer.CustomerResponseModel;
+import com.example.customersservice.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

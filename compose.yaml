@@ -3,7 +3,7 @@ services:
   customer_management_service:
     build: ./customers-service
     ports:
-      - "8081:8080"
+      - "8086:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=h2
     depends_on:
@@ -48,7 +48,7 @@ services:
       - customer_management_service
       - product_management_service
       - order_processing_service
-      - inventory_management_service
+      # - inventory_management_service
 
   mysql1:
     image: 'mysql:latest'

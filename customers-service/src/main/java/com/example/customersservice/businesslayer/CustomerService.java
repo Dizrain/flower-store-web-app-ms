@@ -1,7 +1,7 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.businesslayer;
+package com.example.customersservice.businesslayer;
 
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerRequestModel;
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerResponseModel;
+import com.example.customersservice.presentationlayer.CustomerRequestModel;
+import com.example.customersservice.presentationlayer.CustomerResponseModel;
 
 import java.util.List;
 

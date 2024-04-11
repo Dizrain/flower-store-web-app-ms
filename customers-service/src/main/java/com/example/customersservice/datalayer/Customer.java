@@ -1,6 +1,5 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.datalayer;
+package com.example.customersservice.datalayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.ProductIdentifier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

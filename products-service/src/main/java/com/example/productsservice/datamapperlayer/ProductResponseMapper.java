@@ -1,9 +1,9 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.datamapperlayer;
+package com.example.productsservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.Category;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.Product;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductController;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductResponseModel;
+import com.example.productsservice.datalayer.Category;
+import com.example.productsservice.datalayer.Product;
+import com.example.productsservice.presentationlayer.ProductController;
+import com.example.productsservice.presentationlayer.ProductResponseModel;
 import org.mapstruct.*;
 import org.springframework.hateoas.Link;
 

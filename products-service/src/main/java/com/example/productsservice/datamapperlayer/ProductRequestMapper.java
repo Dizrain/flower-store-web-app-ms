@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.datamapperlayer;
+package com.example.productsservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.Product;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.ProductIdentifier;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductRequestModel;
+import com.example.productsservice.datalayer.Product;
+import com.example.productsservice.datalayer.ProductIdentifier;
+import com.example.productsservice.presentationlayer.ProductRequestModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

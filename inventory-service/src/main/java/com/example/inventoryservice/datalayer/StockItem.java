@@ -1,6 +1,5 @@
-package com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer;
+package com.example.inventoryservice.datalayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.ProductIdentifier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

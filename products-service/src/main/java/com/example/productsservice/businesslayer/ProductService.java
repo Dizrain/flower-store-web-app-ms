@@ -1,9 +1,9 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.businesslayer;
+package com.example.productsservice.businesslayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.Category;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.Product;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductRequestModel;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductResponseModel;
+import com.example.productsservice.datalayer.Category;
+import com.example.productsservice.datalayer.Product;
+import com.example.productsservice.presentationlayer.ProductRequestModel;
+import com.example.productsservice.presentationlayer.ProductResponseModel;
 
 import java.util.List;
 

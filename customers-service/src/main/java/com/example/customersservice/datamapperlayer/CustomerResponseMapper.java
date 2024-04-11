@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.datamapperlayer;
+package com.example.customersservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.customermanagementsubdomain.datalayer.Customer;
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerController;
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerResponseModel;
+import com.example.customersservice.datalayer.Customer;
+import com.example.customersservice.presentationlayer.CustomerController;
+import com.example.customersservice.presentationlayer.CustomerResponseModel;
 import org.mapstruct.*;
 import org.springframework.hateoas.Link;
 

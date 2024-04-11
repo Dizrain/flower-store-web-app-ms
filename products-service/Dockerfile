@@ -4,7 +4,7 @@ COPY src ./src
 COPY build.gradle.kts .
 RUN gradle bootJar --no-daemon
 
-EXPOSE 8082
+EXPOSE 8080
 
 FROM openjdk:17
 ARG JAR_FILE=build/libs/*.jar

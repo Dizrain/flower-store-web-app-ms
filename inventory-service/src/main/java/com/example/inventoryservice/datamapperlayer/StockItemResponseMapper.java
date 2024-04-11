@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.inventorymanagementsubdomain.datamapperlayer;
+package com.example.inventoryservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItem;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemController;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemResponseModel;
+import com.example.inventoryservice.datalayer.StockItem;
+import com.example.inventoryservice.presentationlayer.StockItemController;
+import com.example.inventoryservice.presentationlayer.StockItemResponseModel;
 import org.mapstruct.*;
 import org.springframework.hateoas.Link;
 

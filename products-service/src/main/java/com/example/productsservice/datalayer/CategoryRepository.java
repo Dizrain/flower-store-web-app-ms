@@ -1,4 +1,4 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.datalayer;
+package com.example.productsservice.datalayer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

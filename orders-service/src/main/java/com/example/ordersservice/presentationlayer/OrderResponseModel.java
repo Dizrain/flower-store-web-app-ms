@@ -1,4 +1,4 @@
-package com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer;
+package com.example.ordersservice.presentationlayer;
 
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;

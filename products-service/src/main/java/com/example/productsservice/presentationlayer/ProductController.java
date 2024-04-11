@@ -1,6 +1,6 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer;
+package com.example.productsservice.presentationlayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.businesslayer.ProductService;
+import com.example.productsservice.businesslayer.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.orderprocessingsubdomain.datamapperlayer;
+package com.example.ordersservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.Order;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.datalayer.OrderIdentifier;
-import com.example.flowerstorewebapp.orderprocessingsubdomain.presentationlayer.OrderRequestModel;
+import com.example.ordersservice.datalayer.Order;
+import com.example.ordersservice.datalayer.OrderIdentifier;
+import com.example.ordersservice.presentationlayer.OrderRequestModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

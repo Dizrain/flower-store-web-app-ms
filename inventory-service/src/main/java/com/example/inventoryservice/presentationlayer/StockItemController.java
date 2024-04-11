@@ -1,6 +1,6 @@
-package com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer;
+package com.example.inventoryservice.presentationlayer;
 
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.businesslayer.InventoryService;
+import com.example.inventoryservice.businesslayer.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

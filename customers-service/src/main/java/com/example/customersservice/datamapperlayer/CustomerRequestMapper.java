@@ -1,8 +1,8 @@
-package com.example.flowerstorewebapp.customermanagementsubdomain.datamapperlayer;
+package com.example.customersservice.datamapperlayer;
 
-import com.example.flowerstorewebapp.customermanagementsubdomain.datalayer.Customer;
-import com.example.flowerstorewebapp.customermanagementsubdomain.datalayer.CustomerIdentifier;
-import com.example.flowerstorewebapp.customermanagementsubdomain.presentationlayer.CustomerRequestModel;
+import com.example.customersservice.datalayer.Customer;
+import com.example.customersservice.datalayer.CustomerIdentifier;
+import com.example.customersservice.presentationlayer.CustomerRequestModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

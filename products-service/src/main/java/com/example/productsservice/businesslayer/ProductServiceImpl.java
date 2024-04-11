@@ -1,11 +1,11 @@
-package com.example.flowerstorewebapp.productmanagementsubdomain.businesslayer;
+package com.example.productsservice.businesslayer;
 
-import com.example.flowerstorewebapp.productmanagementsubdomain.datalayer.*;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datamapperlayer.ProductRequestMapper;
-import com.example.flowerstorewebapp.productmanagementsubdomain.datamapperlayer.ProductResponseMapper;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductRequestModel;
-import com.example.flowerstorewebapp.productmanagementsubdomain.presentationlayer.ProductResponseModel;
-import com.example.flowerstorewebapp.utils.exceptions.NotFoundException;
+import com.example.productsservice.datalayer.*;
+import com.example.productsservice.datamapperlayer.ProductRequestMapper;
+import com.example.productsservice.datamapperlayer.ProductResponseMapper;
+import com.example.productsservice.presentationlayer.ProductRequestModel;
+import com.example.productsservice.presentationlayer.ProductResponseModel;
+import com.example.productsservice.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

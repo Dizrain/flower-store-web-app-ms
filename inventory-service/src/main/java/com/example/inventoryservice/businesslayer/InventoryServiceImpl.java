@@ -1,13 +1,13 @@
-package com.example.flowerstorewebapp.inventorymanagementsubdomain.businesslayer;
+package com.example.inventoryservice.businesslayer;
 
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItem;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItemIdentifier;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datalayer.StockItemRepository;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datamapperlayer.StockItemRequestMapper;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.datamapperlayer.StockItemResponseMapper;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemRequestModel;
-import com.example.flowerstorewebapp.inventorymanagementsubdomain.presentationlayer.StockItemResponseModel;
-import com.example.flowerstorewebapp.utils.exceptions.NotFoundException;
+import com.example.inventoryservice.datalayer.StockItem;
+import com.example.inventoryservice.datalayer.StockItemIdentifier;
+import com.example.inventoryservice.datalayer.StockItemRepository;
+import com.example.inventoryservice.datamapperlayer.StockItemRequestMapper;
+import com.example.inventoryservice.datamapperlayer.StockItemResponseMapper;
+import com.example.inventoryservice.presentationlayer.StockItemRequestModel;
+import com.example.inventoryservice.presentationlayer.StockItemResponseModel;
+import com.example.inventoryservice.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
