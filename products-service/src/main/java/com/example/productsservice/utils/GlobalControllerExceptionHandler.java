@@ -5,6 +5,7 @@ import com.example.productsservice.utils.exceptions.InvalidInputException;
 import com.example.productsservice.utils.exceptions.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -63,6 +64,17 @@ public class GlobalControllerExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public HttpErrorInfo handleDataIntegrityViolationException(WebRequest request, DataIntegrityViolationException ex) {
+        final String path = request.getDescription(false);
+        final String message = "Data integrity violation";
+
+        log.debug("Returning HTTP status: {} for path: {}, message: {}", HttpStatus.CONFLICT, path, message);
+
+        return new HttpErrorInfo(HttpStatus.CONFLICT, path, message);
     }
 
     private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, WebRequest request, Exception ex) {

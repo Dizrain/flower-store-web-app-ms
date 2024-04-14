@@ -35,7 +35,7 @@ public class Product {
     private BigDecimal price;
 
     @NotEmpty(message = "Product must have at least one category")
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
