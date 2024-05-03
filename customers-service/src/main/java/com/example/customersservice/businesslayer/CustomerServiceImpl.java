@@ -9,6 +9,7 @@ import com.example.customersservice.datamapperlayer.CustomerResponseMapper;
 import com.example.customersservice.presentationlayer.CustomerRequestModel;
 import com.example.customersservice.presentationlayer.CustomerResponseModel;
 import com.example.customersservice.utils.exceptions.NotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,9 +39,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseModel getCustomerById(String customerId) {
-        Long id = Long.parseLong(customerId);
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Customer not found with id " + id));
+        Customer customer = customerRepository.findCustomerByCustomerIdentifier_CustomerId(customerId)
+                .orElseThrow(() -> new NotFoundException("Customer not found with id " + customerId));
         return customerResponseMapper.entityToResponseModel(customer);
     }
 
@@ -53,9 +53,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseModel updateCustomer(CustomerRequestModel updatedCustomerModel, String customerId) {
-        Long id = Long.parseLong(customerId);
-        Customer existingCustomer = customerRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Customer not found with id " + id));
+        Customer existingCustomer = customerRepository.findCustomerByCustomerIdentifier_CustomerId(customerId)
+                .orElseThrow(() -> new NotFoundException("Customer not found with id " + customerId));
 
         // Map the request model to the entity while preserving its ID
         Customer updatedCustomer = customerRequestMapper.requestModelToEntity(updatedCustomerModel, existingCustomer.getCustomerIdentifier());
@@ -66,8 +65,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
     
     @Override
+    @Transactional
     public void removeCustomer(String customerId) {
-        Long id = Long.parseLong(customerId);
-        customerRepository.deleteById(id);
+        customerRepository.deleteByCustomerIdentifier_CustomerId(customerId);
     }
 }

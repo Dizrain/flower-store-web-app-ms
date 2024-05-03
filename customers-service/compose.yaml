@@ -1,37 +1,37 @@
 version: '3.8'
 services:
-  product_management_service:
+  customer_management_service:
     build: .
     ports:
-      - "7003:7003"
+      - "7001:7001"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      mysql4:
+      mysql1:
         condition: service_healthy
 
-  mysql4:
+  mysql1:
     image: 'mysql:latest'
     environment:
-      - MYSQL_DATABASE=products-db
+      - MYSQL_DATABASE=customers-db
       - MYSQL_USER=user
       - MYSQL_PASSWORD=secretpwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
-      - "3310:3306"
+      - "3307:3306"
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 10
 
-  phpmyadmin4:
+  phpmyadmin1:
     image: phpmyadmin:5.2.0
-    container_name: phpmyadmin4
+    container_name: phpmyadmin1
     links:
-      - mysql4
+      - mysql1
     restart: always
     ports:
-      - "5016:80"
+      - "5011:80"
     environment:
       - PMA_ARBITRARY=1

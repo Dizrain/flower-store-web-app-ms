@@ -3,19 +3,45 @@ services:
   customer_management_service:
     build: ./customers-service
     ports:
-      - "8086:8080"
+      - "7001:7001"
     environment:
-      - SPRING_PROFILES_ACTIVE=h2
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       mysql1:
         condition: service_healthy
+
+  mysql1:
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_DATABASE=customers-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+      - MYSQL_ROOT_PASSWORD=rootpwd
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin1:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin1
+    links:
+      - mysql1
+    restart: always
+    ports:
+      - "5011:80"
+    environment:
+      - PMA_ARBITRARY=1
 
   product_management_service:
     build: ./products-service
     ports:
       - "7003:7003"
     environment:
-      - SPRING_PROFILES_ACTIVE=h2
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       mysql4:
         condition: service_healthy
@@ -38,21 +64,6 @@ services:
       - customer_management_service
       - product_management_service
       - order_processing_service
-
-  mysql1:
-    image: 'mysql:latest'
-    environment:
-      - MYSQL_DATABASE=customers-db
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
-      - MYSQL_ROOT_PASSWORD=rootpwd
-    ports:
-      - "3307:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
 
   mysql3:
     image: 'mysql:latest'
@@ -83,18 +94,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
-  phpmyadmin1:
-    image: phpmyadmin:5.2.0
-    container_name: phpmyadmin1
-    links:
-      - mysql1
-    restart: always
-    ports:
-      - 5013:80
-    environment:
-      - PMA_ARBITRARY=1
-
 
   phpmyadmin3:
     image: phpmyadmin:5.2.0

@@ -1,8 +1,3 @@
--- Drop table if it already exists
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS customers;
-SET FOREIGN_KEY_CHECKS = 1;
-
 -- Creation of the customers table
 CREATE TABLE customers
 (

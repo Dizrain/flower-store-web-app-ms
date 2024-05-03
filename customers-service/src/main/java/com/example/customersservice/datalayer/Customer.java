@@ -23,6 +23,7 @@ public class Customer {
     private String name;
 
     @Email(message = "Email should be valid")
+    @Column(unique = true)
     private String email;
 
     @NotBlank(message = "Contact number cannot be blank")
