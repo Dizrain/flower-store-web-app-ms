@@ -48,4 +48,10 @@ public class ProductController {
         productService.removeProduct(productId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<ProductResponseModel>> getProductsByCategory(@PathVariable Long categoryId) {
+        List<ProductResponseModel> products = productService.getProductsByCategory(categoryId);
+        return ResponseEntity.ok(products);
+    }
 }

@@ -13,7 +13,7 @@ services:
   product_management_service:
     build: ./products-service
     ports:
-      - "8082:8080"
+      - "7003:7003"
     environment:
       - SPRING_PROFILES_ACTIVE=h2
     depends_on:
@@ -30,16 +30,6 @@ services:
       mysql3:
         condition: service_healthy
 
-#  inventory_management_service:
-#    build: ./inventory-service
-#    ports:
-#      - "8084:8080"
-#    environment:
-#      - SPRING_PROFILES_ACTIVE=h2
-#    depends_on:
-#      mysql_server:
-#        condition: service_healthy
-
   flower_store_service: # Aggregator service
     build: ./api-gateway
     ports:
@@ -48,7 +38,6 @@ services:
       - customer_management_service
       - product_management_service
       - order_processing_service
-      # - inventory_management_service
 
   mysql1:
     image: 'mysql:latest'
@@ -64,21 +53,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-
-#  mysql2:
-#    image: 'mysql:latest'
-#    environment:
-#      - MYSQL_DATABASE=inventory-db
-#      - MYSQL_USER=user
-#      - MYSQL_PASSWORD=pwd
-#      - MYSQL_ROOT_PASSWORD=rootpwd
-#    ports:
-#      - "3308:3306"
-#    healthcheck:
-#      test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 10
 
   mysql3:
     image: 'mysql:latest'
@@ -121,16 +95,6 @@ services:
     environment:
       - PMA_ARBITRARY=1
 
-#  phpmyadmin2:
-#    image: phpmyadmin:5.2.0
-#    container_name: phpmyadmin2
-#    links:
-#      - mysql2
-#    restart: always
-#    ports:
-#      - 5014:80
-#    environment:
-#      - PMA_ARBITRARY=1
 
   phpmyadmin3:
     image: phpmyadmin:5.2.0

@@ -41,4 +41,14 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> categories;
+
+    // Flower specific attributes
+    @NotBlank(message = "Color cannot be blank")
+    private String color;
+
+    @NotBlank(message = "Type cannot be blank")
+    private String type;
+
+    @NotNull(message = "In season must be set")
+    private boolean inSeason;
 }

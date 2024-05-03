@@ -9,10 +9,12 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE categories
 (
     id   BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    category_id VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    UNIQUE (category_id)
 );
 
--- Creation of the products table without category_id references
+-- Creation of the products table with additional columns
 CREATE TABLE products
 (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -20,6 +22,9 @@ CREATE TABLE products
     name        VARCHAR(255) NOT NULL,
     description TEXT,
     price       DECIMAL(10, 2) NOT NULL CHECK (price > 0),
+    color       VARCHAR(255) NOT NULL,
+    type        VARCHAR(255) NOT NULL,
+    inSeason    BOOLEAN NOT NULL,
     UNIQUE (product_id)
 );
 
@@ -31,4 +36,15 @@ CREATE TABLE product_category
     PRIMARY KEY (product_id, category_id),
     FOREIGN KEY (product_id) REFERENCES products(id),
     FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+-- Creation of the stock_items table
+CREATE TABLE stock_items
+(
+    id                 BIGINT AUTO_INCREMENT PRIMARY KEY,
+    stock_item_id      VARCHAR(255) NOT NULL,
+    product_id         VARCHAR(255) NOT NULL,
+    stock_level        INT NOT NULL CHECK (stock_level >= 0),
+    reorder_threshold  INT NOT NULL CHECK (reorder_threshold >= 0),
+    UNIQUE (stock_item_id)
 );

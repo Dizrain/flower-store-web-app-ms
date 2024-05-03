@@ -38,6 +38,9 @@ public class ProductRepositoryTest {
         product.setPrice(new BigDecimal("10.00"));
         product.setProductIdentifier(new ProductIdentifier());
         product.setCategories(new HashSet<>(Arrays.asList(category)));
+        product.setColor("Red");
+        product.setType("Tulip");
+        product.setInSeason(true);
         productRepository.save(product);
 
         // Create and save another product associated with the category
@@ -46,6 +49,9 @@ public class ProductRepositoryTest {
         anotherProduct.setPrice(new BigDecimal("15.00"));
         anotherProduct.setProductIdentifier(new ProductIdentifier());
         anotherProduct.setCategories(new HashSet<>(Arrays.asList(category)));
+        anotherProduct.setColor("White");
+        anotherProduct.setType("Rose");
+        anotherProduct.setInSeason(false);
         productRepository.save(anotherProduct);
     }
 

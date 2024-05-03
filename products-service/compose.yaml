@@ -3,9 +3,9 @@ services:
   product_management_service:
     build: .
     ports:
-      - "8082:8080"
+      - "7003:7003"
     environment:
-      - SPRING_PROFILES_ACTIVE=h2
+      - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       mysql4:
         condition: service_healthy
@@ -15,7 +15,7 @@ services:
     environment:
       - MYSQL_DATABASE=products-db
       - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
+      - MYSQL_PASSWORD=secretpwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
       - "3310:3306"

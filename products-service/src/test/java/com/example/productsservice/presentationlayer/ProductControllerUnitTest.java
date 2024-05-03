@@ -10,14 +10,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -40,6 +42,9 @@ public class ProductControllerUnitTest {
                 .description("Test Description")
                 .price(BigDecimal.valueOf(100.0))
                 .categoryIds(Arrays.asList("cat1", "cat2"))
+                .color("Red")
+                .type("Tulip")
+                .inSeason(true)
                 .build();
 
         productResponseModel = ProductResponseModel.builder()
@@ -48,6 +53,9 @@ public class ProductControllerUnitTest {
                 .description("Test Description")
                 .price(100.0)
                 .categoryIds(Arrays.asList("cat1", "cat2"))
+                .color("White")
+                .type("Rose")
+                .inSeason(false)
                 .build();
     }
 
@@ -102,6 +110,14 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    public void whenCreateProductWithNonexistentCategory_thenThrowNotFoundException() {
+        Mockito.when(productService.addProduct(any(ProductRequestModel.class)))
+                .thenThrow(new NotFoundException("One or more categories not found with the provided IDs"));
+
+        assertThrows(NotFoundException.class, () -> productController.createProduct(productRequestModel));
+    }
+
+    @Test
     public void updateProduct_thenReturnUpdatedProduct() {
         Mockito.when(productService.updateProduct(any(ProductRequestModel.class), anyString())).thenReturn(productResponseModel);
 
@@ -112,11 +128,38 @@ public class ProductControllerUnitTest {
     }
 
     @Test
+    public void whenUpdateProductWithNonexistentCategory_thenThrowNotFoundException() {
+        Mockito.when(productService.updateProduct(any(ProductRequestModel.class), anyString()))
+                .thenThrow(new NotFoundException("One or more categories not found with the provided IDs"));
+
+        assertThrows(NotFoundException.class, () -> productController.updateProduct("prod1", productRequestModel));
+    }
+
+    @Test
     public void deleteProduct_thenStatusNoContent() {
         Mockito.doNothing().when(productService).removeProduct(anyString());
 
         ResponseEntity<Void> response = productController.deleteProduct("prod1");
 
         assertEquals(204, response.getStatusCodeValue());
+    }
+
+    @Test
+    public void getProductsByCategory_thenReturnProductsInCategory() {
+        List<ProductResponseModel> products = Arrays.asList(productResponseModel);
+        Mockito.when(productService.getProductsByCategory(anyLong())).thenReturn(products);
+
+        ResponseEntity<List<ProductResponseModel>> response = productController.getProductsByCategory(1L);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(products, response.getBody());
+    }
+
+    @Test
+    public void whenCreateProductWithConstraintViolation_thenThrowConstraintViolationException() {
+        Mockito.when(productService.addProduct(any(ProductRequestModel.class)))
+                .thenThrow(new ConstraintViolationException("Constraint violation occurred", new HashSet<>()));
+
+        assertThrows(ConstraintViolationException.class, () -> productController.createProduct(productRequestModel));
     }
 }

@@ -1,7 +1,6 @@
 package com.example.productsservice.utils;
 
 
-import com.example.productsservice.utils.exceptions.InvalidInputException;
 import com.example.productsservice.utils.exceptions.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -29,18 +28,6 @@ public class GlobalControllerExceptionHandler {
     public HttpErrorInfo handleNotFoundException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(NOT_FOUND, request, ex);
     }
-
-    @ResponseStatus(UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(InvalidInputException.class)
-    public HttpErrorInfo handleInvalidInputException(WebRequest request, Exception ex) {
-        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
-    }
-
-//    @ResponseStatus(UNPROCESSABLE_ENTITY)
-//    @ExceptionHandler(DuplicateVinException.class)
-//    public HttpErrorInfo handleDuplicateVinException(WebRequest request, Exception ex) {
-//        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
-//    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

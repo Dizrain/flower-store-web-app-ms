@@ -16,4 +16,7 @@ public class ProductRequestModel {
     String description;
     List<String> categoryIds;
     BigDecimal price;
+    String color;
+    String type;
+    boolean inSeason;
 }

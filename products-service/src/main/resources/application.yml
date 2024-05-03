@@ -1,7 +1,7 @@
 server:
   error:
     include-message: always
-  port: 8080
+  port: 7003
 
 logging:
   level:
@@ -15,10 +15,11 @@ spring:
     url: jdbc:mysql://mysql4/products-db
     username: user
     password: secretpwd
+    initialization-mode: always
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
   config:
     activate:

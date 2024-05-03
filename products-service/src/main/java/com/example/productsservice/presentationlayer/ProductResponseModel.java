@@ -16,4 +16,7 @@ public class ProductResponseModel extends RepresentationModel<ProductResponseMod
     String description;
     List<String> categoryIds;
     double price;
+    String color;
+    String type;
+    boolean inSeason;
 }

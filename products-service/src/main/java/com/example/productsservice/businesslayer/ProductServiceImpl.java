@@ -92,7 +92,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductResponseModel> getProductsByCategory(Long categoryId) {
-        // Assuming there's a method in ProductRepository to find by category ID
         List<Product> products = productRepository.findAllByCategories_Id(categoryId);
         return productResponseMapper.entityListToResponseModelList(products);
     }
