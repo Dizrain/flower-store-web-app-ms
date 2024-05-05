@@ -101,6 +101,21 @@ public class CustomerControllerIntegrationTest {
     }
 
     @Test
+    public void whenCreateCustomerWithInvalidEmail_thenThrowUnprocessableEntity() {
+        CustomerRequestModel customerRequestModel = CustomerRequestModel.builder()
+                .name("New Customer")
+                .email("invalidEmail") // Invalid email
+                .contactNumber("1112223334")
+                .address("New Address")
+                .build();
+
+        webTestClient.post().uri(BASE_URL)
+                .bodyValue(customerRequestModel)
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @Test
     public void whenUpdateCustomer_thenReturnUpdatedCustomer() {
         Customer existingCustomer = customerRepository.findAll().get(0);
         CustomerRequestModel customerRequestModel = CustomerRequestModel.builder()
