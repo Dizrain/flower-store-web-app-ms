@@ -7,9 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "customers") // Explicitly naming the table
-@Data // Generates getters, setters, equals, hashCode, and toString methods
-@NoArgsConstructor // Generates a no-arguments constructor
+@Table(name = "customers")
+@Data
+@NoArgsConstructor
 public class Customer {
 
     @Id
