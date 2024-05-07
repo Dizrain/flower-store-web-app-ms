@@ -16,6 +16,7 @@ public class OrderRequestModel {
     List<OrderItemModel> items; // This assumes the existence of an OrderItemModel class to capture item-specific data
     String shippingAddress;
     String billingInformation;
+    //
 
     @Value
     @Builder
@@ -23,6 +24,5 @@ public class OrderRequestModel {
     public static class OrderItemModel {
         String productId;
         int quantity;
-        double pricePerItem;
     }
 }

@@ -15,8 +15,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public interface OrderResponseMapper {
 
     @Mapping(expression = "java(order.getOrderIdentifier().getOrderId())", target = "orderId")
+    @Mapping(expression = "java(order.getPaymentId().getPaymentId())", target = "paymentId")
+    @Mapping(target = "customerId", expression = "java(order.getCustomerId().getCustomerId())")
     @Mapping(target = "status", expression = "java(order.getStatus().name())")
-    // Map the enum to a string
+    @Mapping(target = "items", source = "order.items")
     OrderResponseModel entityToResponseModel(Order order);
 
     List<OrderResponseModel> entityListToResponseModelList(List<Order> orders);
@@ -30,4 +32,7 @@ public interface OrderResponseMapper {
         Link cancelLink = linkTo(methodOn(OrderController.class).cancelOrder(model.getOrderId())).withRel("cancelOrder");
         model.add(cancelLink);
     }
+
+    @Mapping(target = "productId", expression = "java(orderItem.getProductId().getProductId())")
+    OrderResponseModel.OrderItemModel orderItemToOrderItemResponseModel(Order.OrderItem orderItem);
 }

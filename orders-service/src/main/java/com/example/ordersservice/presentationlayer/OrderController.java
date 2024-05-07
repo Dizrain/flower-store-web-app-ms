@@ -1,6 +1,7 @@
 package com.example.ordersservice.presentationlayer;
 
 import com.example.ordersservice.businesslayer.OrderService;
+import com.example.ordersservice.datalayer.CustomerIdentifier;
 import com.example.ordersservice.presentationlayer.OrderRequestModel;
 import com.example.ordersservice.presentationlayer.OrderResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +50,5 @@ public class OrderController {
     public ResponseEntity<Void> cancelOrder(@PathVariable String orderId) {
         orderService.cancelOrder(orderId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    // If you have additional endpoints, such as filtering orders by customer ID, you can add them here.
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<OrderResponseModel>> getOrdersByCustomerId(@PathVariable String customerId) {
-        List<OrderResponseModel> orders = orderService.getOrdersByCustomerId(customerId);
-        return ResponseEntity.ok(orders);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.ordersservice.businesslayer;
 
+import com.example.ordersservice.datalayer.CustomerIdentifier;
 import com.example.ordersservice.datalayer.Order;
 import com.example.ordersservice.presentationlayer.OrderRequestModel;
 import com.example.ordersservice.presentationlayer.OrderResponseModel;
@@ -48,4 +49,11 @@ public interface OrderService {
      * @return a list of OrderResponseModel for the specified customer.
      */
     List<OrderResponseModel> getOrdersByCustomerId(String customerId);
+
+    /**
+     * Retrieves orders by product ID.
+     * @param productId the ID of the product whose orders are to be retrieved.
+     * @return a list of OrderResponseModel for the specified product.
+     */
+    List<OrderResponseModel> getOrdersByProductId(String productId);
 }

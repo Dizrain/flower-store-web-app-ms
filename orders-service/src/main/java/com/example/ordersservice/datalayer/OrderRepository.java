@@ -12,11 +12,12 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     // This method is already provided by JpaRepository but is included here for clarity.
     <S extends Order> S save(S order);
 
-    // Deletes a given order. This method is also provided by JpaRepository.
     void delete(Order order);
 
-    // Finds orders by customer ID. This is a custom method that you need to add to match your OrderService implementation.
-    List<Order> findByCustomerId(String customerId);
+    // Finds orders by customer ID.
+    List<Order> findByCustomerId_CustomerId(String customerId);
 
-    // You can add more custom methods here if needed, such as methods to find orders by date range, status, etc.
+    // Finds orders by product ID.
+    List<Order> findByItems_ProductId_ProductId(String productId);
+
 }

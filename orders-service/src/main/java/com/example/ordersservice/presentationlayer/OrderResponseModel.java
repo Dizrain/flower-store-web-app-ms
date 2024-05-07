@@ -13,7 +13,8 @@ public class OrderResponseModel extends RepresentationModel<OrderResponseModel> 
 
     String orderId;
     String customerId;
-    List<OrderItemModel> items; // Similar to the request model, using an inner class for items
+    String paymentId;
+    List<OrderItemModel> items;
     String shippingAddress;
     String billingInformation;
     String status;
@@ -25,6 +26,5 @@ public class OrderResponseModel extends RepresentationModel<OrderResponseModel> 
     public static class OrderItemModel extends RepresentationModel<OrderResponseModel> {
         String productId;
         int quantity;
-        double pricePerItem; // TODO: Add from product
     }
 }
