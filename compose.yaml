@@ -1,9 +1,7 @@
 version: '3.8'
 services:
-  customer_management_service:
+  customers-service:
     build: ./customers-service
-    ports:
-      - "7001:7001"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -15,7 +13,7 @@ services:
     environment:
       - MYSQL_DATABASE=customers-db
       - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
+      - MYSQL_PASSWORD=secretpwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
       - "3307:3306"
@@ -36,7 +34,7 @@ services:
     environment:
       - PMA_ARBITRARY=1
 
-  payment_service:
+  payments-service:
     build: ./payment-service
     ports:
       - "7002:7002"
@@ -51,7 +49,7 @@ services:
     environment:
       - MYSQL_DATABASE=payments-db
       - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
+      - MYSQL_PASSWORD=secretpwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
       - "3308:3306"
@@ -72,7 +70,7 @@ services:
     environment:
       - PMA_ARBITRARY=1
 
-  product_management_service:
+  products-service:
     build: ./products-service
     ports:
       - "7003:7003"
@@ -82,49 +80,51 @@ services:
       mysql4:
         condition: service_healthy
 
-  order_processing_service:
-    build: ./orders-service
-    ports:
-      - "8083:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=h2
-    depends_on:
-      mysql3:
-        condition: service_healthy
-
-  flower_store_service: # Aggregator service
-    build: ./api-gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      - customer_management_service
-      - product_management_service
-      - order_processing_service
-
-  mysql3:
+  mysql4:
     image: 'mysql:latest'
     environment:
-      - MYSQL_DATABASE=order-db
+      - MYSQL_DATABASE=products-db
       - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
+      - MYSQL_PASSWORD=secretpwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
-      - "3309:3306"
+      - "3310:3306"
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 10
 
-  mysql4:
+  phpmyadmin4:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin4
+    links:
+      - mysql4
+    restart: always
+    ports:
+      - "5013:80"
+    environment:
+      - PMA_ARBITRARY=1
+
+  orders-service:
+    build: ./orders-service
+    ports:
+      - "7004:7004"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql3:
+        condition: service_healthy
+
+  mysql3:
     image: 'mysql:latest'
     environment:
-      - MYSQL_DATABASE=products-db
+      - MYSQL_DATABASE=orders-db
       - MYSQL_USER=user
-      - MYSQL_PASSWORD=pwd
+      - MYSQL_PASSWORD=secretpwd
       - MYSQL_ROOT_PASSWORD=rootpwd
     ports:
-      - "3310:3306"
+      - "3309:3306"
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-uuser", "-psecretpwd", "-h", "localhost" ]
       interval: 10s
@@ -138,20 +138,22 @@ services:
       - mysql3
     restart: always
     ports:
-      - 5015:80
+      - "5014:80"
     environment:
       - PMA_ARBITRARY=1
 
-  phpmyadmin4:
-    image: phpmyadmin:5.2.0
-    container_name: phpmyadmin4
-    links:
-      - mysql4
-    restart: always
-    ports:
-      - 5016:80
+
+  flower_store-service:
+    build: ./api-gateway
     environment:
-      - PMA_ARBITRARY=1
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - customers-service
+      - payments-service
+      - products-service
+      - orders-service
 
 networks:
   default:

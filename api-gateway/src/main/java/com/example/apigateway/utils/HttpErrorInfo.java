@@ -1,4 +1,4 @@
-package com.example.inventoryservice.utils;
+package com.example.apigateway.utils;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

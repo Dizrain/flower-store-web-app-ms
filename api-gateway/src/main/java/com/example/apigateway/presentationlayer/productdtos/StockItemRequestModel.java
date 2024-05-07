@@ -1,4 +1,4 @@
-package com.example.inventoryservice.presentationlayer;
+package com.example.apigateway.presentationlayer.productdtos;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

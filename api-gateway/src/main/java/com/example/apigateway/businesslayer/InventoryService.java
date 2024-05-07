@@ -1,8 +1,7 @@
-package com.example.inventoryservice.businesslayer;
+package com.example.apigateway.businesslayer;
 
-import com.example.inventoryservice.datalayer.StockItem;
-import com.example.inventoryservice.presentationlayer.StockItemRequestModel;
-import com.example.inventoryservice.presentationlayer.StockItemResponseModel;
+import com.example.apigateway.presentationlayer.productdtos.StockItemRequestModel;
+import com.example.apigateway.presentationlayer.productdtos.StockItemResponseModel;
 
 import java.util.List;
 

@@ -1,6 +1,8 @@
-package com.example.inventoryservice.presentationlayer;
+package com.example.apigateway.presentationlayer;
 
-import com.example.inventoryservice.businesslayer.InventoryService;
+import com.example.apigateway.businesslayer.InventoryService;
+import com.example.apigateway.presentationlayer.productdtos.StockItemRequestModel;
+import com.example.apigateway.presentationlayer.productdtos.StockItemResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,10 +48,10 @@ public class StockItemController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteStockItem(@PathVariable String productId) {
         inventoryService.removeStockItem(productId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // Optional: Implement a method to handle stock reordering
     @PostMapping("/{productId}/reorder")
     public ResponseEntity<StockItemResponseModel> reorderStock(@PathVariable String productId) {
         StockItemResponseModel reorderedStockItem = inventoryService.reorderStock(productId);

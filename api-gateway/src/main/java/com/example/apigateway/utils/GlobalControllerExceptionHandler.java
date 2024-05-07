@@ -1,10 +1,10 @@
-package com.example.inventoryservice.utils;
+package com.example.apigateway.utils;
 
 
-import com.example.inventoryservice.utils.exceptions.InvalidInputException;
-import com.example.inventoryservice.utils.exceptions.NotFoundException;
+import com.example.apigateway.utils.exceptions.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @RestControllerAdvice
 @Slf4j
@@ -28,18 +27,6 @@ public class GlobalControllerExceptionHandler {
     public HttpErrorInfo handleNotFoundException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(NOT_FOUND, request, ex);
     }
-
-    @ResponseStatus(UNPROCESSABLE_ENTITY)
-    @ExceptionHandler(InvalidInputException.class)
-    public HttpErrorInfo handleInvalidInputException(WebRequest request, Exception ex) {
-        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
-    }
-
-//    @ResponseStatus(UNPROCESSABLE_ENTITY)
-//    @ExceptionHandler(DuplicateVinException.class)
-//    public HttpErrorInfo handleDuplicateVinException(WebRequest request, Exception ex) {
-//        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
-//    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -63,6 +50,17 @@ public class GlobalControllerExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public HttpErrorInfo handleDataIntegrityViolationException(WebRequest request, DataIntegrityViolationException ex) {
+        final String path = request.getDescription(false);
+        final String message = "Data integrity violation";
+
+        log.debug("Returning HTTP status: {} for path: {}, message: {}", HttpStatus.CONFLICT, path, message);
+
+        return new HttpErrorInfo(HttpStatus.CONFLICT, path, message);
     }
 
     private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, WebRequest request, Exception ex) {

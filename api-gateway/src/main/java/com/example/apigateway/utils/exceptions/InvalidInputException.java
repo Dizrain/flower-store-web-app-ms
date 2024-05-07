@@ -1,4 +1,4 @@
-package com.example.inventoryservice.utils.exceptions;
+package com.example.apigateway.utils.exceptions;
 
 public class InvalidInputException extends RuntimeException{
 
