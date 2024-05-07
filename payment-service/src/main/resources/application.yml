@@ -6,7 +6,7 @@ server:
 logging:
     level:
         root: INFO
-        com.example.customersservice: DEBUG
+        com.example.paymentservice: DEBUG
         org.hibernate.SQL: DEBUG
         org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
