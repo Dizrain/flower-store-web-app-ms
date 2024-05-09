@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "6a8c1083-aebe-41b2-942a-1fb77ac98eb7",
+		"name": "Order Service API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23309318"
+	},
+	"item": [
+		{
+			"name": "Create Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerDetails\": {\n        \"customerId\": \"\",\n        \"name\": \"\",\n        \"email\": \"\",\n        \"contactNumber\": \"\",\n        \"address\": \"\"\n    },\n    \"items\": [\n        {\n            \"productId\": \"\",\n            \"quantity\": 0,\n            \"price\": 0.0\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Order Items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/:orderIdentifier/items",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						":orderIdentifier",
+						"items"
+					],
+					"variable": [
+						{
+							"key": "orderIdentifier",
+							"value": "ORD001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Item",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/:orderIdentifier/items/:orderItemId",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						":orderIdentifier",
+						"items",
+						":orderItemId"
+					],
+					"variable": [
+						{
+							"key": "orderIdentifier",
+							"value": "ORD002"
+						},
+						{
+							"key": "orderItemId",
+							"value": "OI003"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order Item",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"itemId\": \"\",\n    \"productId\": \"\",\n    \"quantity\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/:orderIdentifier/items/:orderItemIdentifier",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						":orderIdentifier",
+						"items",
+						":orderItemIdentifier"
+					],
+					"variable": [
+						{
+							"key": "orderIdentifier"
+						},
+						{
+							"key": "orderItemIdentifier"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order Status",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/:orderIdentifier/status?newStatus=DELIVERED",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						":orderIdentifier",
+						"status"
+					],
+					"query": [
+						{
+							"key": "newStatus",
+							"value": "DELIVERED",
+							"description": "New status of the order"
+						}
+					],
+					"variable": [
+						{
+							"key": "orderIdentifier",
+							"value": "ORD001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/:orderIdentifier",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						":orderIdentifier"
+					],
+					"variable": [
+						{
+							"key": "orderIdentifier",
+							"value": "ORD001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Order",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/:orderIdentifier",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						":orderIdentifier"
+					],
+					"variable": [
+						{
+							"key": "orderIdentifier"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders By Customer",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/orders/customer/:customerId",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders",
+						"customer",
+						":customerId"
+					],
+					"variable": [
+						{
+							"key": "customerId",
+							"value": "CUST2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "localhost:7004"
+		}
+	]
+}
