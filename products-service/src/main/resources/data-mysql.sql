@@ -4,11 +4,11 @@ INSERT INTO categories (category_id, name) VALUES ('category-2', 'Tulips');
 INSERT INTO categories (category_id, name) VALUES ('category-3', 'Orchids');
 
 -- Insert data into the products table
-INSERT INTO products (product_id, name, description, price, color, type, inSeason)
+INSERT INTO products (product_id, name, description, price, color, type, in_season)
 VALUES ('product-1', 'Red Rose Bouquet', 'A bouquet of beautiful red roses', 30.00, 'Red', 'Rose', true);
-INSERT INTO products (product_id, name, description, price, color, type, inSeason)
+INSERT INTO products (product_id, name, description, price, color, type, in_season)
 VALUES ('product-2', 'Yellow Tulip Bouquet', 'A bouquet of vibrant yellow tulips', 25.00, 'Yellow', 'Tulip', true);
-INSERT INTO products (product_id, name, description, price, color, type, inSeason)
+INSERT INTO products (product_id, name, description, price, color, type, in_season)
 VALUES ('product-3', 'Purple Orchid Bouquet', 'A bouquet of exotic purple orchids', 35.00, 'Purple', 'Orchid', false);
 
 -- Insert data into the product_category join table

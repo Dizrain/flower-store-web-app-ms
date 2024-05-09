@@ -1,5 +1,7 @@
 package com.example.apigateway.utils;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -13,8 +15,11 @@ public class HttpErrorInfo {
     private final HttpStatus httpStatus;
     private final String message;
 
-    public HttpErrorInfo(HttpStatus httpStatus, String path, String message) {
-        timestamp = ZonedDateTime.now();
+    @JsonCreator // This annotation tells Jackson to use this constructor for deserialization
+    public HttpErrorInfo(@JsonProperty("httpStatus") HttpStatus httpStatus,
+                         @JsonProperty("path") String path,
+                         @JsonProperty("message") String message) {
+        this.timestamp = ZonedDateTime.now();
         this.httpStatus = httpStatus;
         this.path = path;
         this.message = message;

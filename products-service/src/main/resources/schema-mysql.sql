@@ -24,7 +24,7 @@ CREATE TABLE products
     price       DECIMAL(10, 2) NOT NULL CHECK (price > 0),
     color       VARCHAR(255) NOT NULL,
     type        VARCHAR(255) NOT NULL,
-    inSeason    BOOLEAN NOT NULL,
+    in_season    BOOLEAN NOT NULL,
     UNIQUE (product_id)
 );
 
@@ -43,7 +43,7 @@ CREATE TABLE stock_items
 (
     id                 BIGINT AUTO_INCREMENT PRIMARY KEY,
     stock_item_id      VARCHAR(255) NOT NULL,
-    product_id         VARCHAR(255) NOT NULL,
+    product_id         VARCHAR(255) NOT NULL UNIQUE,
     stock_level        INT NOT NULL CHECK (stock_level >= 0),
     reorder_threshold  INT NOT NULL CHECK (reorder_threshold >= 0),
     UNIQUE (stock_item_id)
