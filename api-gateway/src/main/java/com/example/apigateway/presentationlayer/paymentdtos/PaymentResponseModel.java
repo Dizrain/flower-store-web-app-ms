@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 public class PaymentResponseModel {
     String paymentId;
     double amount;
-    LocalDateTime paymentDate;
+    String paymentDate;
     PaymentMethod paymentMethod;
 }
