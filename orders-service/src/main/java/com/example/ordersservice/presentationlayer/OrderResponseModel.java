@@ -1,30 +1,21 @@
 package com.example.ordersservice.presentationlayer;
 
-import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class OrderResponseModel extends RepresentationModel<OrderResponseModel> {
+@AllArgsConstructor
+public class OrderResponseModel {
 
-    String orderId;
-    String customerId;
-    String paymentId;
-    List<OrderItemModel> items;
-    String shippingAddress;
-    String billingInformation;
-    String status;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class OrderItemModel extends RepresentationModel<OrderResponseModel> {
-        String productId;
-        int quantity;
-    }
+    private String orderIdentifier;
+    private String status;
+    private CustomerDetailsResponseModel customerDetails;
+    private List<OrderItemResponseModel> items;
+    private Double totalPrice;
 }

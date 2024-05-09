@@ -1,54 +1,69 @@
 package com.example.ordersservice.presentationlayer;
 
-import com.example.ordersservice.businesslayer.OrderService;
 import com.example.ordersservice.datalayer.CustomerIdentifier;
-import com.example.ordersservice.presentationlayer.OrderRequestModel;
-import com.example.ordersservice.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.datalayer.OrderStatus;
+import com.example.ordersservice.businesslayer.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/orders") // Define the base URL for order-related requests
+@RequestMapping("api/v1/orders")
 public class OrderController {
 
-    private final OrderService orderService;
-
     @Autowired
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    private OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<OrderResponseModel> createOrder(@RequestBody OrderRequestModel requestModel) {
+        OrderResponseModel responseModel = orderService.createOrder(requestModel);
+        return ResponseEntity.ok(responseModel);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<OrderResponseModel>> getAllOrders() {
-        List<OrderResponseModel> orders = orderService.getAllOrders();
-        return ResponseEntity.ok(orders);
+    @GetMapping("/{orderIdentifier}/items")
+    public ResponseEntity<List<OrderItemResponseModel>> getAllOrderItems(@PathVariable String orderIdentifier) {
+        List<OrderItemResponseModel> responseModels = orderService.getAllOrderItems(orderIdentifier);
+        return ResponseEntity.ok(responseModels);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponseModel> getOrderById(@PathVariable String orderId) {
-        OrderResponseModel order = orderService.getOrderById(orderId);
-        return ResponseEntity.ok(order);
+    @GetMapping("/{orderIdentifier}/items/{orderItemId}")
+    public ResponseEntity<OrderItemResponseModel> getOrderItem(@PathVariable String orderIdentifier, @PathVariable String orderItemId) {
+        OrderItemResponseModel responseModel = orderService.getOrderItem(orderIdentifier, orderItemId);
+        return ResponseEntity.ok(responseModel);
     }
 
-    @PostMapping()
-    public ResponseEntity<OrderResponseModel> createOrder(@RequestBody OrderRequestModel orderRequestModel) {
-        OrderResponseModel savedOrder = orderService.createOrder(orderRequestModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
+    @PutMapping("/{orderIdentifier}/items/{orderItemIdentifier}")
+    public ResponseEntity<OrderItemResponseModel> updateOrderItem(@PathVariable String orderIdentifier,
+                                                                  @PathVariable String orderItemIdentifier,
+                                                                  @RequestBody OrderItemUpdateRequestModel itemUpdate) {
+        OrderItemResponseModel responseModel = orderService.updateOrderItem(orderIdentifier, itemUpdate);
+        return ResponseEntity.ok(responseModel);
     }
 
-    @PutMapping("/{orderId}")
-    public ResponseEntity<OrderResponseModel> updateOrder(@PathVariable String orderId, @RequestBody OrderRequestModel orderRequestModel) {
-        OrderResponseModel updatedOrder = orderService.updateOrder(orderRequestModel, orderId);
-        return ResponseEntity.ok(updatedOrder);
+    @PatchMapping("/{orderIdentifier}/status")
+    public ResponseEntity<OrderResponseModel> updateOrderStatus(@PathVariable String orderIdentifier,
+                                                                @RequestParam OrderStatus newStatus) {
+        OrderResponseModel responseModel = orderService.updateOrderStatus(orderIdentifier, newStatus);
+        return ResponseEntity.ok(responseModel);
     }
 
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> cancelOrder(@PathVariable String orderId) {
-        orderService.cancelOrder(orderId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @GetMapping("/{orderIdentifier}")
+    public ResponseEntity<OrderResponseModel> getOrder(@PathVariable String orderIdentifier) {
+        OrderResponseModel responseModel = orderService.getOrder(orderIdentifier);
+        return ResponseEntity.ok(responseModel);
+    }
+
+    @DeleteMapping("/{orderIdentifier}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable String orderIdentifier) {
+        orderService.deleteOrder(orderIdentifier);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<OrderResponseModel>> getOrdersByCustomer(@PathVariable CustomerIdentifier customerId) {
+        List<OrderResponseModel> responseModels = orderService.getOrdersByCustomer(customerId);
+        return ResponseEntity.ok(responseModels);
     }
 }

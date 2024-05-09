@@ -30,7 +30,6 @@ public class ProductsServiceClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
 
-    private final String PRODUCT_SERVICE_BASE_URL;
     private final String STOCK_ITEM_SERVICE_BASE_URL;
 
     public ProductsServiceClient(RestTemplate restTemplate, ObjectMapper mapper,
@@ -40,24 +39,8 @@ public class ProductsServiceClient {
         this.restTemplate = restTemplate;
         this.mapper = mapper;
 
-        PRODUCT_SERVICE_BASE_URL = "http://" + productServiceHost + ":" +
-                productServicePort + "/api/v1/products";
-
         STOCK_ITEM_SERVICE_BASE_URL = "http://" + productServiceHost + ":" +
                 productServicePort + "/api/v1/stock-items";
-    }
-
-    public ProductResponseModel getProductByProductId(String productId) {
-        try {
-            String url = PRODUCT_SERVICE_BASE_URL + "/" + productId;
-
-            ProductResponseModel productResponseModel = restTemplate.getForObject(url,
-                    ProductResponseModel.class);
-
-            return productResponseModel;
-        } catch (HttpClientErrorException ex) {
-            throw handleHttpClientException(ex);
-        }
     }
 
     public StockItemResponseModel getStockItemByProductId(String productId) {
@@ -84,6 +67,12 @@ public class ProductsServiceClient {
         } catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);
         }
+    }
+
+    public boolean isProductAvailable(String productId, int quantity) {
+        StockItemResponseModel stockItem = getStockItemByProductId(productId);
+        log.info("Stock level for product {} is {}", productId, stockItem.getStockLevel());
+        return stockItem.getStockLevel() >= quantity;
     }
 
     private String getErrorMessage(HttpClientErrorException ex) {

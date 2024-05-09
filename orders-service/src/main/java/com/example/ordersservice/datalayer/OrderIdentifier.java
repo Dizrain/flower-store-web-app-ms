@@ -16,7 +16,6 @@ public class OrderIdentifier {
     }
 
     public OrderIdentifier(String orderId) {
-        // Allows setting a specific identifier, useful for data import or integration scenarios
         this.orderId = orderId;
     }
 }

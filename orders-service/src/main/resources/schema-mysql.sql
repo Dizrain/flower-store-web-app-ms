@@ -4,27 +4,25 @@ DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS orders;
 SET FOREIGN_KEY_CHECKS = 1;
 
-CREATE TABLE orders
-(
-    id                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id            VARCHAR(255) NOT NULL,
-    customer_id         VARCHAR(255) NOT NULL,
-    payment_id          VARCHAR(255) NOT NULL,
-    shipping_address    VARCHAR(255) NOT NULL,
-    billing_information VARCHAR(255) NOT NULL,
-    status              VARCHAR(255) NOT NULL
+-- Create the orders table
+CREATE TABLE orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_identifier VARCHAR(255) NOT NULL UNIQUE,
+    status VARCHAR(50) NOT NULL,
+    customer_id BIGINT,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    customer_contact_number VARCHAR(255) NOT NULL,
+    customer_address VARCHAR(500) NOT NULL
 );
 
-CREATE TABLE order_items
-(
-    id             BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id       BIGINT      NOT NULL,
-    product_id     VARCHAR(255) NOT NULL,
-    quantity       INTEGER     NOT NULL
+-- Create the order_items table
+CREATE TABLE order_items (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_item_identifier VARCHAR(255) NOT NULL UNIQUE,
+    order_id BIGINT NOT NULL,
+    product_id VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DOUBLE NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id)
 );
-
-
--- Add foreign key constraints to order_items table
-ALTER TABLE order_items
-ADD CONSTRAINT FK_order_items_orders
-FOREIGN KEY (order_id) REFERENCES orders(id);

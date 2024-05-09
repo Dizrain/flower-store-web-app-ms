@@ -1,7 +1,8 @@
 package com.example.ordersservice.presentationlayer;
 
 import com.example.ordersservice.businesslayer.OrderService;
-import com.example.ordersservice.utils.exceptions.NotFoundException;
+import com.example.ordersservice.datalayer.CustomerIdentifier;
+import com.example.ordersservice.datalayer.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,117 +32,134 @@ public class OrderControllerUnitTest {
     private OrderResponseModel orderResponseModel;
 
     @BeforeEach
-    public void setup() {
-        // Initialize orderRequestModel
-        OrderRequestModel.OrderItemModel itemModel = OrderRequestModel.OrderItemModel.builder()
+    public void setUp() {
+        // Initialize OrderItemRequestModel
+        OrderItemRequestModel itemRequestModel = OrderItemRequestModel.builder()
                 .productId("prod1")
                 .quantity(2)
                 .build();
 
+        // Initialize OrderRequestModel
         orderRequestModel = OrderRequestModel.builder()
-                .customerId("cust1")
-                .items(Arrays.asList(itemModel))
-                .shippingAddress("123 Test St")
-                .billingInformation("456 Test Ave")
+                .customerDetails(CustomerDetailsRequestModel.builder()
+                        .customerId("customer1")
+                        .name("Test Name")
+                        .email("test@example.com")
+                        .contactNumber("1234567890")
+                        .address("Test Address")
+                        .build())
+                .items(Arrays.asList(itemRequestModel))
                 .build();
 
-        // Initialize orderResponseModel
-        OrderResponseModel.OrderItemModel responseItemModel = OrderResponseModel.OrderItemModel.builder()
+        // Initialize OrderItemResponseModel
+        OrderItemResponseModel itemResponseModel = OrderItemResponseModel.builder()
+                .orderItemIdentifier("item1")
                 .productId("prod1")
                 .quantity(2)
+                .price(50.0)
                 .build();
 
+        // Initialize OrderResponseModel
         orderResponseModel = OrderResponseModel.builder()
-                .orderId("order1")
-                .customerId("cust1")
-                .items(Arrays.asList(responseItemModel))
-                .shippingAddress("123 Test St")
-                .billingInformation("456 Test Ave")
-                .status("PLACED")
+                .orderIdentifier("order1")
+                .status(OrderStatus.PLACED.toString())
+                .customerDetails(CustomerDetailsResponseModel.builder()
+                        .customerId("customer1")
+                        .name("Test Name")
+                        .email("test@example.com")
+                        .contactNumber("1234567890")
+                        .address("Test Address")
+                        .build())
+                .items(Arrays.asList(itemResponseModel))
+                .totalPrice(100.0)
                 .build();
     }
 
     @Test
-    public void getAllOrders_thenReturnAllOrders() {
-        Mockito.when(orderService.getAllOrders()).thenReturn(Arrays.asList(orderResponseModel));
-
-        ResponseEntity<List<OrderResponseModel>> response = orderController.getAllOrders();
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(1, response.getBody().size());
-        assertEquals(orderResponseModel, response.getBody().get(0));
-    }
-
-    @Test
-    public void getOrderById_thenReturnOrder() {
-        Mockito.when(orderService.getOrderById(anyString())).thenReturn(orderResponseModel);
-
-        ResponseEntity<OrderResponseModel> response = orderController.getOrderById("order1");
-
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(orderResponseModel, response.getBody());
-    }
-
-    @Test
-    public void whenOrderNotFoundOnGet_thenThrowNotFoundException(){
-        Mockito.when(orderService.getOrderById(anyString())).thenThrow(new NotFoundException("Order not found with id order1"));
-
-        String NOT_FOUND_ORDER_ID = "order1";
-        assertThrowsExactly(NotFoundException.class, ()->
-                orderController.getOrderById(NOT_FOUND_ORDER_ID));
-
-        verify(orderService, times(1)).getOrderById(NOT_FOUND_ORDER_ID);
-    }
-
-    @Test
-    public void createOrder_thenReturnCreatedOrder() {
+    public void whenCreateOrder_thenReturnCreatedOrder() {
         Mockito.when(orderService.createOrder(any(OrderRequestModel.class))).thenReturn(orderResponseModel);
 
         ResponseEntity<OrderResponseModel> response = orderController.createOrder(orderRequestModel);
 
-        assertEquals(201, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCodeValue());
         assertEquals(orderResponseModel, response.getBody());
+        verify(orderService, times(1)).createOrder(any(OrderRequestModel.class));
     }
 
     @Test
-    public void updateOrder_thenReturnUpdatedOrder() {
-        Mockito.when(orderService.updateOrder(any(OrderRequestModel.class), anyString())).thenReturn(orderResponseModel);
+    public void whenGetOrder_thenReturnOrder() {
+        Mockito.when(orderService.getOrder(anyString())).thenReturn(orderResponseModel);
 
-        ResponseEntity<OrderResponseModel> response = orderController.updateOrder("order1", orderRequestModel);
+        ResponseEntity<OrderResponseModel> response = orderController.getOrder("order1");
 
         assertEquals(200, response.getStatusCodeValue());
         assertEquals(orderResponseModel, response.getBody());
+        verify(orderService, times(1)).getOrder(anyString());
     }
 
     @Test
-    public void directMockTest() {
-        Mockito.doThrow(new NotFoundException("Order not found with id order1"))
-                .when(orderService).updateOrder(any(OrderRequestModel.class), eq("order1"));
+    public void whenDeleteOrder_thenNoContent() {
+        Mockito.doNothing().when(orderService).deleteOrder(anyString());
 
-        // Directly test the mocked service
-        assertThrows(NotFoundException.class, () -> orderService.updateOrder(orderRequestModel, "order1"));
-    }
-
-    @Test
-    public void whenOrderNotFoundOnUpdate_thenThrowNotFoundException() {
-        Mockito.doThrow(new NotFoundException("Order not found with id order1")).when(orderService).updateOrder(any(OrderRequestModel.class), anyString());
-
-        assertThrows(NotFoundException.class, () -> orderController.updateOrder("order1", orderRequestModel));
-    }
-
-    @Test
-    public void cancelOrder_thenStatusNoContent() {
-        Mockito.doNothing().when(orderService).cancelOrder(anyString());
-
-        ResponseEntity<Void> response = orderController.cancelOrder("order1");
+        ResponseEntity<Void> response = orderController.deleteOrder("order1");
 
         assertEquals(204, response.getStatusCodeValue());
+        verify(orderService, times(1)).deleteOrder(anyString());
     }
 
     @Test
-    public void whenOrderNotFoundOnCancel_thenThrowNotFoundException() {
-        Mockito.doThrow(new NotFoundException("Order not found with id order1")).when(orderService).cancelOrder(anyString());
+    public void whenGetOrdersByCustomer_thenReturnOrders() {
+        Mockito.when(orderService.getOrdersByCustomer(any(CustomerIdentifier.class))).thenReturn(Arrays.asList(orderResponseModel));
 
-        assertThrows(NotFoundException.class, () -> orderController.cancelOrder("order1"));
+        ResponseEntity<List<OrderResponseModel>> response = orderController.getOrdersByCustomer(new CustomerIdentifier("customer1"));
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
+        assertEquals(orderResponseModel, response.getBody().get(0));
+        verify(orderService, times(1)).getOrdersByCustomer(any(CustomerIdentifier.class));
+    }
+
+    @Test
+    public void whenUpdateOrderStatus_thenReturnUpdatedOrder() {
+        Mockito.when(orderService.updateOrderStatus(anyString(), any(OrderStatus.class))).thenReturn(orderResponseModel);
+
+        ResponseEntity<OrderResponseModel> response = orderController.updateOrderStatus("order1", OrderStatus.DELIVERED);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(orderResponseModel, response.getBody());
+        verify(orderService, times(1)).updateOrderStatus(anyString(), any(OrderStatus.class));
+    }
+
+    @Test
+    public void whenGetAllOrderItems_thenReturnOrderItems() {
+        Mockito.when(orderService.getAllOrderItems(anyString())).thenReturn(Arrays.asList(new OrderItemResponseModel()));
+
+        ResponseEntity<List<OrderItemResponseModel>> response = orderController.getAllOrderItems("order1");
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(1, response.getBody().size());
+        verify(orderService, times(1)).getAllOrderItems(anyString());
+    }
+
+    @Test
+    public void whenGetOrderItem_thenReturnOrderItem() {
+        Mockito.when(orderService.getOrderItem(anyString(), anyString())).thenReturn(new OrderItemResponseModel());
+
+        ResponseEntity<OrderItemResponseModel> response = orderController.getOrderItem("order1", "item1");
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+        verify(orderService, times(1)).getOrderItem(anyString(), anyString());
+    }
+
+    @Test
+    public void whenUpdateOrderItem_thenReturnUpdatedOrderItem() {
+        OrderItemUpdateRequestModel itemUpdate = new OrderItemUpdateRequestModel("item1", "prod1", 2);
+        Mockito.when(orderService.updateOrderItem(anyString(), any(OrderItemUpdateRequestModel.class))).thenReturn(new OrderItemResponseModel());
+        ResponseEntity<OrderItemResponseModel> response = orderController.updateOrderItem("order1", "item1", itemUpdate);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
+        verify(orderService, times(1)).updateOrderItem(anyString(), any(OrderItemUpdateRequestModel.class));
     }
 }

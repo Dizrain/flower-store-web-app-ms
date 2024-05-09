@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,43 +21,31 @@ public class OrderRepositoryTest {
     public void setUp() {
         orderRepository.deleteAll();
 
-        // Create and save an order
+        // Create a new Order object
         Order order = new Order();
-        order.setShippingAddress("123 Main St");
-        order.setBillingInformation("Visa 1234");
+        order.setOrderIdentifier(new OrderIdentifier());
         order.setStatus(OrderStatus.PLACED);
-        order.setOrderIdentifier(new OrderIdentifier()); // Set OrderIdentifier
-        order.setCustomerId(new CustomerIdentifier()); // Set CustomerIdentifier
+        order.setCustomerDetails(new CustomerDetails("Cust-1", "Test Name", "test@example.com", "1234567890", "Test Address"));
+        order.setTotalPrice(100.0);
 
-        // Create an OrderItem and add it to the items list
-        Order.OrderItem item = new Order.OrderItem();
-        item.setProductId(new ProductIdentifier());
-        item.setQuantity(1);
-        order.setItems(List.of(item)); // Initialize items with the created OrderItem
+        // Create a new OrderItem object
+        OrderItem item = new OrderItem();
+        item.setOrderItemIdentifier(new OrderItemIdentifier());
+        item.setProductId("test-product-id");
+        item.setQuantity(2);
+        item.setPrice(50.0);
 
+        // Add the OrderItem to the Order
+        order.setItems(new HashSet<>(Arrays.asList(item)));
+
+        // Save the Order to the repository
         orderRepository.save(order);
-
-        // Create and save another order
-        Order anotherOrder = new Order();
-        anotherOrder.setShippingAddress("456 Oak St");
-        anotherOrder.setBillingInformation("MasterCard 5678");
-        anotherOrder.setStatus(OrderStatus.SHIPPED);
-        anotherOrder.setOrderIdentifier(new OrderIdentifier()); // Set OrderIdentifier
-        anotherOrder.setCustomerId(new CustomerIdentifier()); // Set CustomerIdentifier
-
-        // Create an OrderItem and add it to the items list
-        Order.OrderItem anotherItem = new Order.OrderItem();
-        anotherItem.setProductId(new ProductIdentifier());
-        anotherItem.setQuantity(1);
-        anotherOrder.setItems(List.of(anotherItem)); // Initialize items with the created OrderItem
-
-        orderRepository.save(anotherOrder);
     }
 
     @Test
     public void testFindAll() {
         List<Order> orders = orderRepository.findAll();
-        assertEquals(2, orders.size());
+        assertEquals(1, orders.size());
     }
 
     @Test
@@ -81,40 +70,19 @@ public class OrderRepositoryTest {
     }
 
     @Test
-    public void testFindByCustomerId_CustomerId() {
-        String validCustomerId = orderRepository.findAll().get(0).getCustomerId().getCustomerId();
+    public void whenOrderExists_testDeleteByOrderIdentifier() {
+        // Get an existing order
+        Order existingOrder = orderRepository.findAll().get(0);
+        String existingOrderId = existingOrder.getOrderIdentifier().getOrderId();
 
-        List<Order> foundOrders = orderRepository.findByCustomerId_CustomerId(validCustomerId);
+        // Delete the order
+        orderRepository.deleteByOrderIdentifier_OrderId(existingOrderId);
 
-        assertFalse(foundOrders.isEmpty());
-        assertEquals(validCustomerId, foundOrders.get(0).getCustomerId().getCustomerId());
-    }
+        // Try to find the deleted order
+        Order deletedOrder = orderRepository.findOrderByOrderIdentifier_OrderId(existingOrderId)
+                .orElse(null);
 
-    @Test
-    public void whenNoOrdersForCustomer_testFindByCustomerId_CustomerId() {
-        String invalidCustomerId = "invalidId";
-
-        List<Order> foundOrders = orderRepository.findByCustomerId_CustomerId(invalidCustomerId);
-
-        assertTrue(foundOrders.isEmpty());
-    }
-
-    @Test
-    public void testFindByItems_ProductId_ProductId() {
-        ProductIdentifier validProductId = orderRepository.findAll().get(0).getItems().get(0).getProductId();
-
-        List<Order> foundOrders = orderRepository.findByItems_ProductId_ProductId(validProductId.getProductId());
-
-        assertFalse(foundOrders.isEmpty());
-        assertEquals(validProductId, foundOrders.get(0).getItems().get(0).getProductId());
-    }
-
-    @Test
-    public void whenNoOrdersForProduct_testFindByItems_ProductId_ProductId() {
-        ProductIdentifier invalidProductId = new ProductIdentifier("invalidId");
-
-        List<Order> foundOrders = orderRepository.findByItems_ProductId_ProductId(invalidProductId.getProductId());
-
-        assertTrue(foundOrders.isEmpty());
+        // Assert that the order was deleted
+        assertNull(deletedOrder);
     }
 }

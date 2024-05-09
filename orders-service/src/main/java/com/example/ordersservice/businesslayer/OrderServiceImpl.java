@@ -5,151 +5,180 @@ import com.example.ordersservice.datamapperlayer.OrderRequestMapper;
 import com.example.ordersservice.datamapperlayer.OrderResponseMapper;
 import com.example.ordersservice.datamapperlayer.paymentdtos.PaymentRequestModel;
 import com.example.ordersservice.datamapperlayer.paymentdtos.PaymentResponseModel;
-import com.example.ordersservice.datamapperlayer.productdtos.ProductResponseModel;
 import com.example.ordersservice.datamapperlayer.productdtos.StockItemRequestModel;
 import com.example.ordersservice.datamapperlayer.productdtos.StockItemResponseModel;
 import com.example.ordersservice.domainclientlayer.PaymentsServiceClient;
 import com.example.ordersservice.domainclientlayer.ProductsServiceClient;
-import com.example.ordersservice.presentationlayer.OrderRequestModel;
-import com.example.ordersservice.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.presentationlayer.OrderItemResponseModel;
 import com.example.ordersservice.utils.exceptions.NotFoundException;
 import com.example.ordersservice.utils.exceptions.OutOfStockException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.ordersservice.presentationlayer.OrderRequestModel;
+import com.example.ordersservice.presentationlayer.OrderResponseModel;
+import com.example.ordersservice.presentationlayer.OrderItemUpdateRequestModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.rmi.server.UID;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
     private final OrderRepository orderRepository;
+    private final ProductsServiceClient productsServiceClient;
+    private final PaymentsServiceClient paymentsServiceClient;
     private final OrderRequestMapper orderRequestMapper;
     private final OrderResponseMapper orderResponseMapper;
-    private final PaymentsServiceClient paymentsServiceClient;
-    private final ProductsServiceClient productsServiceClient;
 
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository,
-                            OrderRequestMapper orderRequestMapper,
-                            OrderResponseMapper orderResponseMapper,
-                            PaymentsServiceClient paymentsServiceClient,
-                            ProductsServiceClient productsServiceClient) {
+    OrderServiceImpl(OrderRepository orderRepository,
+                     ProductsServiceClient productsServiceClient,
+                     PaymentsServiceClient paymentsServiceClient,
+                     OrderRequestMapper orderRequestMapper,
+                     OrderResponseMapper orderResponseMapper) {
         this.orderRepository = orderRepository;
+        this.productsServiceClient = productsServiceClient;
+        this.paymentsServiceClient = paymentsServiceClient;
         this.orderRequestMapper = orderRequestMapper;
         this.orderResponseMapper = orderResponseMapper;
-        this.paymentsServiceClient = paymentsServiceClient;
-        this.productsServiceClient = productsServiceClient;
     }
 
     @Override
-    public List<OrderResponseModel> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return orderResponseMapper.entityListToResponseModelList(orders);
-    }
-
-    @Override
-    public OrderResponseModel getOrderById(String orderId) {
-        Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderId)
-                .orElseThrow(() -> new NotFoundException("Order not found with id " + orderId));
+    public OrderResponseModel getOrder(String orderIdentifier) {
+        Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderIdentifier)
+                .orElseThrow(() -> new NotFoundException("Order not found."));
         return orderResponseMapper.entityToResponseModel(order);
     }
 
+    // In OrderServiceImpl.java
     @Override
     @Transactional
-    public OrderResponseModel createOrder(OrderRequestModel orderRequestModel) {
-        // Check stock level for each product in the order
-        for (OrderRequestModel.OrderItemModel item : orderRequestModel.getItems()) {
+    public OrderResponseModel createOrder(OrderRequestModel requestModel) {
+        Order order = orderRequestMapper.requestModelToEntity(requestModel, new OrderIdentifier());
+        Set<OrderItem> items = requestModel.getItems().stream()
+                .map(item -> orderRequestMapper.mapItem(item, new OrderItemIdentifier()))
+                .collect(Collectors.toSet());
+        order.setItems(items);
+
+        validateProductAvailability(order);
+
+        // Decrease stock level for each item in the order
+        order.getItems().forEach(item -> {
+            item.setOrderItemIdentifier(new OrderItemIdentifier());
+
             StockItemResponseModel stockItem = productsServiceClient.getStockItemByProductId(item.getProductId());
-            if (stockItem.getStockLevel() < item.getQuantity()) {
-                throw new OutOfStockException("Product with id " + item.getProductId() + " is out of stock.");
-            }
-        }
-
-        // Process payment
-        PaymentRequestModel paymentRequestModel = PaymentRequestModel.builder()
-                .amount(calculateOrderTotal(orderRequestModel))
-                .paymentDate(LocalDateTime.now())
-                .paymentMethod(PaymentMethod.CreditCard)
-                .build();
-        PaymentResponseModel paymentResponseModel = paymentsServiceClient.processPayment(paymentRequestModel);
-
-        // Create order
-        Order order = orderRequestMapper.requestModelToEntity(orderRequestModel, new OrderIdentifier());
-        order.setStatus(OrderStatus.PLACED); // Set initial status
-        order.setPaymentId(new PaymentIdentifier(paymentResponseModel.getPaymentId())); // Set payment id
-        order.setCustomerId(new CustomerIdentifier(orderRequestModel.getCustomerId()));
-
-        // Map items and add product id to each item
-        List<Order.OrderItem> orderItems = orderRequestModel.getItems().stream()
-                .map(item -> {
-                    Order.OrderItem orderItem =   orderRequestMapper.orderItemModelToOrderItem(item);
-                    orderItem.setProductId(orderRequestMapper.productIdentifierFromOrderItemModel(item));
-                    return orderItem;
-                })
-                .toList();
-
-        order.setItems(orderItems);
-
-        // Update stock level for each product in the order
-        for (OrderRequestModel.OrderItemModel item : orderRequestModel.getItems()) {
-            StockItemRequestModel stockItemRequestModel = StockItemRequestModel.builder()
+            int newStockLevel = stockItem.getStockLevel() - item.getQuantity();
+            StockItemRequestModel stockItemRequest = StockItemRequestModel.builder()
                     .productId(item.getProductId())
-                    .stockLevel(-item.getQuantity())
+                    .stockLevel(newStockLevel)
+                    .reorderThreshold(stockItem.getReorderThreshold())
                     .build();
-            productsServiceClient.updateStockItem(stockItemRequestModel);
-        }
+            productsServiceClient.updateStockItem(stockItemRequest);
+        });
 
+        double totalPrice = calculateTotalPrice(order);
+        order.setTotalPrice(totalPrice);
+
+        PaymentRequestModel paymentRequest = PaymentRequestModel.builder()
+                .paymentId(new UID().toString())
+                .amount(totalPrice)
+                .paymentDate(LocalDateTime.now())
+                .paymentMethod(PaymentMethod.CreditCard) // Hardcoded for now
+                .build();
+        PaymentResponseModel paymentResponse = paymentsServiceClient.processPayment(paymentRequest);
+
+        order.setStatus(OrderStatus.PLACED);
         Order savedOrder = orderRepository.save(order);
-
-        OrderResponseModel orderResponseModel = orderResponseMapper.entityToResponseModel(savedOrder);
-
-        return orderResponseModel;
-    }
-
-    @Override
-    @Transactional
-    public OrderResponseModel updateOrder(OrderRequestModel updatedOrderModel, String orderId) {
-        Order foundOrder = orderRepository.findOrderByOrderIdentifier_OrderId(orderId).orElseThrow(() -> new NotFoundException("Order not found with id " + orderId));
-        Order updatedOrder = orderRequestMapper.requestModelToEntity(updatedOrderModel, foundOrder.getOrderIdentifier());
-        updatedOrder.setId(foundOrder.getId());
-        updatedOrder.setOrderIdentifier(foundOrder.getOrderIdentifier());
-        updatedOrder.setStatus(foundOrder.getStatus());
-        updatedOrder.setItems(foundOrder.getItems());
-        updatedOrder.setPaymentId(foundOrder.getPaymentId());
-        updatedOrder.setCustomerId(foundOrder.getCustomerId());
-        Order savedOrder = orderRepository.save(updatedOrder);
         return orderResponseMapper.entityToResponseModel(savedOrder);
     }
 
     @Override
-    public void cancelOrder(String orderId) {
-        Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderId)
-                .orElseThrow(() -> new NotFoundException("Order not found with id: " + orderId));
-        order.setStatus(OrderStatus.CANCELLED); // Update status instead of deleting
-        orderRepository.save(order); // Save the updated order
+    @Transactional
+    public OrderItemResponseModel updateOrderItem(String orderIdentifier, OrderItemUpdateRequestModel itemUpdate) {
+        Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderIdentifier)
+                .orElseThrow(() -> new NotFoundException("Order not found."));
+        OrderItem orderItem = order.getItems().stream()
+                .filter(item -> item.getOrderItemIdentifier().getOrderItemId().equals(itemUpdate.getItemId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Item not found."));
+        if (!productsServiceClient.isProductAvailable(itemUpdate.getProductId(), itemUpdate.getQuantity())) {
+            throw new OutOfStockException("Product is out of stock.");
+        }
+        orderRequestMapper.updateEntity(itemUpdate, orderItem);
+        orderRepository.save(order);
+        return orderResponseMapper.entityToResponseModel(orderItem);
     }
 
     @Override
-    public List<OrderResponseModel> getOrdersByCustomerId(String customerId) {
-        List<Order> orders = orderRepository.findByCustomerId_CustomerId(customerId);
-        return orderResponseMapper.entityListToResponseModelList(orders);
+    public List<OrderItemResponseModel> getAllOrderItems(String orderIdentifier) {
+        Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderIdentifier)
+                .orElseThrow(() -> new NotFoundException("Order not found."));
+        return order.getItems().stream()
+                .map(orderResponseMapper::entityToResponseModel)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<OrderResponseModel> getOrdersByProductId(String productId) {
-        List<Order> orders = orderRepository.findByItems_ProductId_ProductId(productId);
-        return orderResponseMapper.entityListToResponseModelList(orders);
+    public OrderItemResponseModel getOrderItem(String orderIdentifier, String orderItemIdentifier) {
+        Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderIdentifier)
+                .orElseThrow(() -> new NotFoundException("Order not found."));
+        OrderItem orderItem = order.getItems().stream()
+                .filter(item -> item.getOrderItemIdentifier().getOrderItemId().equals(orderItemIdentifier))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Order item not found."));
+        return orderResponseMapper.entityToResponseModel(orderItem);
     }
 
-    private double calculateOrderTotal(OrderRequestModel orderRequestModel) {
-        return orderRequestModel.getItems().stream()
-                .mapToDouble(item -> {
-                    String productId = item.getProductId();
-                    ProductResponseModel product = productsServiceClient.getProductByProductId(productId);
-                    return product.getPrice() * item.getQuantity();
-                })
+    @Override
+    @Transactional
+    public void deleteOrder(String orderIdentifier) {
+        orderRepository.deleteByOrderIdentifier_OrderId(orderIdentifier);
+    }
+
+    @Override
+    public List<OrderResponseModel> getOrdersByCustomer(CustomerIdentifier customerIdentifier) {
+        List<Order> orders = orderRepository.findOrdersByCustomerDetails_CustomerId(customerIdentifier.getCustomerId());
+        return orders.stream()
+                .map(orderResponseMapper::entityToResponseModel)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public OrderResponseModel updateOrderStatus(String orderIdentifier, OrderStatus newStatus) {
+       Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderIdentifier)
+                .orElseThrow(() -> new NotFoundException("Order not found."));
+        if (!canUpdateStatus(order, newStatus)) {
+            throw new IllegalStateException("Update to the requested status is not allowed.");
+        }
+        order.setStatus(newStatus);
+        orderRepository.save(order);
+        return orderResponseMapper.entityToResponseModel(order);
+    }
+
+    private void validateProductAvailability(Order order) {
+        List<String> unavailableProductIds = new ArrayList<>();
+        for (OrderItem item : order.getItems()) {
+            if (!productsServiceClient.isProductAvailable(item.getProductId(), item.getQuantity())) {
+                unavailableProductIds.add(item.getProductId());
+            }
+        }
+        if (!unavailableProductIds.isEmpty()) {
+            throw new OutOfStockException("Products with IDs " + String.join(", ", unavailableProductIds) + " are not available.");
+        }
+    }
+
+    private double calculateTotalPrice(Order order) {
+        return order.getItems().stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
+    }
+
+    private boolean canUpdateStatus(Order order, OrderStatus newStatus) {
+        // Example: Cannot change status back to PLACED from any other state.
+        return !(order.getStatus().compareTo(newStatus) > 0);
     }
 }

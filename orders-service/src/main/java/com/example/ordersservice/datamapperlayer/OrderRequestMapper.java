@@ -1,26 +1,30 @@
 package com.example.ordersservice.datamapperlayer;
 
-import com.example.ordersservice.datalayer.Order;
-import com.example.ordersservice.datalayer.OrderIdentifier;
-import com.example.ordersservice.datalayer.ProductIdentifier;
+import com.example.ordersservice.datalayer.*;
+import com.example.ordersservice.presentationlayer.CustomerDetailsRequestModel;
+import com.example.ordersservice.presentationlayer.OrderItemRequestModel;
+import com.example.ordersservice.presentationlayer.OrderItemUpdateRequestModel;
 import com.example.ordersservice.presentationlayer.OrderRequestModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface OrderRequestMapper {
 
-    @Mapping(target = "id", ignore = true) // Assume auto-generation or setting elsewhere
     @Mapping(target = "status", ignore = true)
-    @Mapping(target = "customerId", ignore = true)
-    @Mapping(target = "paymentId", ignore = true)
-    Order requestModelToEntity(OrderRequestModel model, OrderIdentifier orderIdentifier);
+    @Mapping(target="id", ignore = true)
+    @Mapping(target="totalPrice", ignore = true)
+    @Mapping(target="items", ignore = true)
+    Order requestModelToEntity(OrderRequestModel orderRequestModel, OrderIdentifier orderIdentifier);
 
-    @Mapping(target = "id", ignore = true) // Assume auto-generation or setting elsewhere
-    @Mapping(target = "productId", ignore = true)
-    Order.OrderItem orderItemModelToOrderItem(OrderRequestModel.OrderItemModel orderItemModel);
-    // Map the product identifier from the OrderItemModel to the OrderItem entity
-    default ProductIdentifier productIdentifierFromOrderItemModel(OrderRequestModel.OrderItemModel orderItemModel) {
-        return new ProductIdentifier(orderItemModel.getProductId());
-    }
+    @Mapping(target="id", ignore = true)
+    OrderItem mapItem(OrderItemRequestModel orderItemRequestModel, OrderItemIdentifier orderItemIdentifier);
+
+    CustomerDetails requestModelToEntity(CustomerDetailsRequestModel customerDetailsRequestModel);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "orderItemIdentifier", ignore = true)
+    @Mapping(target="price", ignore = true)
+    void updateEntity(OrderItemUpdateRequestModel orderItemUpdateRequestModel, @MappingTarget OrderItem orderItem);
 }

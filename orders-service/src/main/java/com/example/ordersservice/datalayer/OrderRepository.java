@@ -1,6 +1,7 @@
 package com.example.ordersservice.datalayer;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     // This method is already provided by JpaRepository but is included here for clarity.
     <S extends Order> S save(S order);
 
-    void delete(Order order);
+    void deleteByOrderIdentifier_OrderId(String orderId);
 
-    // Finds orders by customer ID.
-    List<Order> findByCustomerId_CustomerId(String customerId);
-
-    // Finds orders by product ID.
-    List<Order> findByItems_ProductId_ProductId(String productId);
-
+    List<Order> findOrdersByCustomerDetails_CustomerId(String customerId);
 }

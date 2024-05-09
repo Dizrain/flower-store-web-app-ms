@@ -3,26 +3,14 @@ package com.example.ordersservice.presentationlayer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
-
+import lombok.Data;
 import java.util.List;
 
-@Value
-@Builder
+@Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class OrderRequestModel {
+    private CustomerDetailsRequestModel customerDetails;
 
-    String customerId;
-    List<OrderItemModel> items; // This assumes the existence of an OrderItemModel class to capture item-specific data
-    String shippingAddress;
-    String billingInformation;
-    //
-
-    @Value
-    @Builder
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class OrderItemModel {
-        String productId;
-        int quantity;
-    }
+    private List<OrderItemRequestModel> items;
 }

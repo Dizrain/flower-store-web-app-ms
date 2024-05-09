@@ -30,16 +30,16 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(IllegalStateException.class)
+    public HttpErrorInfo handleIllegalStateException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler(InvalidInputException.class)
     public HttpErrorInfo handleInvalidInputException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }
-
-//    @ResponseStatus(UNPROCESSABLE_ENTITY)
-//    @ExceptionHandler(DuplicateVinException.class)
-//    public HttpErrorInfo handleDuplicateVinException(WebRequest request, Exception ex) {
-//        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
-//    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
