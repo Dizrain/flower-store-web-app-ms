@@ -18,8 +18,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-import com.example.ordersservice.datamapperlayer.productdtos.ProductResponseModel;
-
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;

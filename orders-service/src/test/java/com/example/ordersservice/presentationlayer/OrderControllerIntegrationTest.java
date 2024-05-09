@@ -50,6 +50,7 @@ public class OrderControllerIntegrationTest {
     private final String BASE_URL = "/api/v1/orders";
 
     private OrderRequestModel orderRequestModel;
+    private OrderRequestModel invalidOrderRequestModel;
 
     @BeforeEach
     public void setUp() {
@@ -73,6 +74,19 @@ public class OrderControllerIntegrationTest {
                         .build())
                 .items(Arrays.asList(itemRequestModel))
                 .build();
+
+        // Initialize invalid OrderRequestModel
+        invalidOrderRequestModel = OrderRequestModel.builder()
+                .customerDetails(CustomerDetailsRequestModel.builder()
+                        .customerId("customer1")
+                        .name("a") // Name too short
+                        .email("") // Invalid email
+                        .contactNumber("1234567890")
+                        .address("Test Address")
+                        .build())
+                .items(Arrays.asList(itemRequestModel))
+                .build();
+
 
         // Initialize OrderItemResponseModel
         OrderItemResponseModel itemResponseModel = OrderItemResponseModel.builder()
@@ -123,6 +137,24 @@ public class OrderControllerIntegrationTest {
     }
 
     @Test
+    public void whenCreateOrderWithOutOfStockProduct_thenThrowOutOfStockException() {
+        when(productsServiceClient.isProductAvailable(anyString(), anyInt())).thenReturn(false);
+
+        webTestClient.post().uri(BASE_URL)
+                .bodyValue(orderRequestModel)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    public void whenCreateOrderWithInvalidData_thenThrowConstraintViolationException() {
+        webTestClient.post().uri(BASE_URL)
+                .bodyValue(invalidOrderRequestModel)
+                .exchange()
+                .expectStatus().isEqualTo(422);
+    }
+
+    @Test
     public void whenGetOrder_thenReturnOrder() {
         webTestClient.get().uri(BASE_URL + "/order1")
                 .exchange()
@@ -134,6 +166,13 @@ public class OrderControllerIntegrationTest {
                     assert orderResponse.getCustomerDetails().getName().equals("Test Name");
                     assert orderResponse.getCustomerDetails().getEmail().equals("test@example.com");
                 });
+    }
+
+    @Test
+    public void whenGetNonExistentOrder_thenThrowNotFoundException() {
+        webTestClient.get().uri(BASE_URL + "/nonexistent")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
@@ -167,6 +206,19 @@ public class OrderControllerIntegrationTest {
     }
 
     @Test
+    public void whenUpdateOrderStatusToInvalid_thenThrowIllegalStateException() {
+        // First update status from PLACED to DELIVERED
+        webTestClient.patch().uri(BASE_URL + "/order1/status?newStatus=DELIVERED")
+                .exchange()
+                .expectStatus().isOk();
+
+        // Then try to update status from DELIVERED to PLACED
+        webTestClient.patch().uri(BASE_URL + "/order1/status?newStatus=PLACED")
+                .exchange()
+                .expectStatus().isEqualTo(422);
+    }
+
+    @Test
     public void whenGetAllOrderItems_thenReturnOrderItems() {
         webTestClient.get().uri(BASE_URL + "/order1/items")
                 .exchange()
@@ -187,6 +239,13 @@ public class OrderControllerIntegrationTest {
                     assert orderItemResponse.getQuantity() == 2;
                     assert orderItemResponse.getPrice() == 50.0;
                 });
+    }
+
+    @Test
+    public void whenGetNonExistentOrderItem_thenThrowNotFoundException() {
+        webTestClient.get().uri(BASE_URL + "/order1/items/nonexistent")
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test

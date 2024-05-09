@@ -1,6 +1,7 @@
 package com.example.ordersservice.datalayer;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -28,9 +29,11 @@ public class Order {
 
     @Embedded
     @NotNull
+    @Valid
     private CustomerDetails customerDetails;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Valid
     private Set<OrderItem> items;
 
     private double totalPrice;
