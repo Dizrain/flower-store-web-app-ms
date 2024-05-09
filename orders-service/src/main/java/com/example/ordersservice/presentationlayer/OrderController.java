@@ -38,7 +38,7 @@ public class OrderController {
     public ResponseEntity<OrderItemResponseModel> updateOrderItem(@PathVariable String orderIdentifier,
                                                                   @PathVariable String orderItemIdentifier,
                                                                   @RequestBody OrderItemUpdateRequestModel itemUpdate) {
-        OrderItemResponseModel responseModel = orderService.updateOrderItem(orderIdentifier, itemUpdate);
+        OrderItemResponseModel responseModel = orderService.updateOrderItem(orderIdentifier, orderItemIdentifier, itemUpdate);
         return ResponseEntity.ok(responseModel);
     }
 

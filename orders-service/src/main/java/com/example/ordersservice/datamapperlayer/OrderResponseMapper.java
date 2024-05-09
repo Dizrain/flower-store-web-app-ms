@@ -11,11 +11,11 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface OrderResponseMapper {
 
-    @Mapping(target = "orderIdentifier", source = "order.orderIdentifier.orderId")
+    @Mapping(target = "orderId", source = "order.orderIdentifier.orderId")
     @Mapping(target = "status", source = "order.status")
     OrderResponseModel entityToResponseModel(Order order);
 
-    @Mapping(target = "orderItemIdentifier", source = "orderItem.orderItemIdentifier.orderItemId")
+    @Mapping(target = "orderItemId", source = "orderItem.orderItemIdentifier.orderItemId")
     OrderItemResponseModel entityToResponseModel(OrderItem orderItem);
 
     CustomerDetailsResponseModel entityToResponseModel(CustomerDetails customerDetails);

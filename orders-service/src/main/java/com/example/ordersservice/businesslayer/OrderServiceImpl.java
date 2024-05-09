@@ -97,17 +97,33 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderItemResponseModel updateOrderItem(String orderIdentifier, OrderItemUpdateRequestModel itemUpdate) {
+    public OrderItemResponseModel updateOrderItem(String orderIdentifier, String orderItemIdentifier, OrderItemUpdateRequestModel itemUpdate) {
         Order order = orderRepository.findOrderByOrderIdentifier_OrderId(orderIdentifier)
                 .orElseThrow(() -> new NotFoundException("Order not found."));
         OrderItem orderItem = order.getItems().stream()
-                .filter(item -> item.getOrderItemIdentifier().getOrderItemId().equals(itemUpdate.getItemId()))
+                .filter(item -> item.getOrderItemIdentifier().getOrderItemId().equals(orderItemIdentifier))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Item not found."));
         if (!productsServiceClient.isProductAvailable(itemUpdate.getProductId(), itemUpdate.getQuantity())) {
             throw new OutOfStockException("Product is out of stock.");
         }
+        int oldQuantity = orderItem.getQuantity();
         orderRequestMapper.updateEntity(itemUpdate, orderItem);
+
+        // Update stock level
+        StockItemResponseModel stockItem = productsServiceClient.getStockItemByProductId(orderItem.getProductId());
+        int newStockLevel = stockItem.getStockLevel() - (itemUpdate.getQuantity() - oldQuantity); // Adjust the stock level
+        StockItemRequestModel stockItemRequest = StockItemRequestModel.builder()
+                .productId(orderItem.getProductId())
+                .stockLevel(newStockLevel)
+                .reorderThreshold(stockItem.getReorderThreshold())
+                .build();
+        productsServiceClient.updateStockItem(stockItemRequest);
+
+        // Update total price
+        double totalPrice = calculateTotalPrice(order);
+        order.setTotalPrice(totalPrice);
+
         orderRepository.save(order);
         return orderResponseMapper.entityToResponseModel(orderItem);
     }

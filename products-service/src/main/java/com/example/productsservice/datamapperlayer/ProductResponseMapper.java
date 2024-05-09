@@ -2,17 +2,11 @@ package com.example.productsservice.datamapperlayer;
 
 import com.example.productsservice.datalayer.Category;
 import com.example.productsservice.datalayer.Product;
-import com.example.productsservice.presentationlayer.ProductController;
 import com.example.productsservice.presentationlayer.ProductResponseModel;
 import org.mapstruct.*;
-import org.springframework.hateoas.Link;
-
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface ProductResponseMapper {
@@ -29,13 +23,5 @@ public interface ProductResponseMapper {
             categoryIds.add(category.getCategoryIdentifier().getCategoryId());
         }
         return categoryIds;
-    }
-
-    @AfterMapping
-    default void addLinks(Product product, @MappingTarget ProductResponseModel model){
-        Link selfLink= linkTo(methodOn(ProductController.class)
-                .getProductById(model.getProductId()))
-                .withSelfRel();
-        model.add(selfLink);
     }
 }

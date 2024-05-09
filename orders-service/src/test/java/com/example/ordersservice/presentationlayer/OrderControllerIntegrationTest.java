@@ -90,7 +90,6 @@ public class OrderControllerIntegrationTest {
 
         // Initialize OrderItemResponseModel
         OrderItemResponseModel itemResponseModel = OrderItemResponseModel.builder()
-                .orderItemIdentifier("item1")
                 .productId("Product 1")
                 .quantity(2)
                 .price(50.0)
@@ -234,7 +233,7 @@ public class OrderControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(OrderItemResponseModel.class)
                 .value(orderItemResponse -> {
-                    assert orderItemResponse.getOrderItemIdentifier().equals("item1");
+                    assert orderItemResponse.getOrderItemId().equals("item1");
                     assert orderItemResponse.getProductId().equals("Product 1");
                     assert orderItemResponse.getQuantity() == 2;
                     assert orderItemResponse.getPrice() == 50.0;
@@ -250,7 +249,7 @@ public class OrderControllerIntegrationTest {
 
     @Test
     public void whenUpdateOrderItem_thenReturnUpdatedOrderItem() {
-        OrderItemUpdateRequestModel itemUpdate = new OrderItemUpdateRequestModel("item1", "prod1", 2);
+        OrderItemUpdateRequestModel itemUpdate = new OrderItemUpdateRequestModel("prod1", 2);
 
         webTestClient.put().uri(BASE_URL + "/order1/items/item1")
                 .bodyValue(itemUpdate)
@@ -258,7 +257,7 @@ public class OrderControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody(OrderItemResponseModel.class)
                 .value(orderItemResponse -> {
-                    assert orderItemResponse.getOrderItemIdentifier().equals("item1");
+                    assert orderItemResponse.getOrderItemId().equals("item1");
                     assert orderItemResponse.getProductId().equals("prod1");
                     assert orderItemResponse.getQuantity() == 2;
                     assert orderItemResponse.getPrice() == 50.0;

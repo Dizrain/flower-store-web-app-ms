@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderResponseModel {
 
-    private String orderIdentifier;
+    private String orderId;
     private String status;
     private CustomerDetailsResponseModel customerDetails;
     private List<OrderItemResponseModel> items;

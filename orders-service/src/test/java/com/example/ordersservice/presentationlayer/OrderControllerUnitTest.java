@@ -53,7 +53,6 @@ public class OrderControllerUnitTest {
 
         // Initialize OrderItemResponseModel
         OrderItemResponseModel itemResponseModel = OrderItemResponseModel.builder()
-                .orderItemIdentifier("item1")
                 .productId("prod1")
                 .quantity(2)
                 .price(50.0)
@@ -61,7 +60,6 @@ public class OrderControllerUnitTest {
 
         // Initialize OrderResponseModel
         orderResponseModel = OrderResponseModel.builder()
-                .orderIdentifier("order1")
                 .status(OrderStatus.PLACED.toString())
                 .customerDetails(CustomerDetailsResponseModel.builder()
                         .customerId("customer1")
@@ -154,12 +152,12 @@ public class OrderControllerUnitTest {
 
     @Test
     public void whenUpdateOrderItem_thenReturnUpdatedOrderItem() {
-        OrderItemUpdateRequestModel itemUpdate = new OrderItemUpdateRequestModel("item1", "prod1", 2);
-        Mockito.when(orderService.updateOrderItem(anyString(), any(OrderItemUpdateRequestModel.class))).thenReturn(new OrderItemResponseModel());
+        OrderItemUpdateRequestModel itemUpdate = new OrderItemUpdateRequestModel( "prod1", 2);
+        Mockito.when(orderService.updateOrderItem(anyString(), anyString(), any(OrderItemUpdateRequestModel.class))).thenReturn(new OrderItemResponseModel());
         ResponseEntity<OrderItemResponseModel> response = orderController.updateOrderItem("order1", "item1", itemUpdate);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-        verify(orderService, times(1)).updateOrderItem(anyString(), any(OrderItemUpdateRequestModel.class));
+        verify(orderService, times(1)).updateOrderItem(anyString(), anyString(), any(OrderItemUpdateRequestModel.class));
     }
 }

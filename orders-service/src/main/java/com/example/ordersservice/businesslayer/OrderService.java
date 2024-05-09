@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrderService {
     OrderResponseModel getOrder(String orderIdentifier);
     OrderResponseModel createOrder(OrderRequestModel requestModel);
-    OrderItemResponseModel updateOrderItem(String orderIdentifier, OrderItemUpdateRequestModel itemUpdate);
+    OrderItemResponseModel updateOrderItem(String orderIdentifier, String orderItemIdentifier, OrderItemUpdateRequestModel itemUpdate);
     List<OrderItemResponseModel> getAllOrderItems(String orderIdentifier);
     OrderItemResponseModel getOrderItem(String orderIdentifier, String orderItemIdentifier);
     void deleteOrder(String orderIdentifier);

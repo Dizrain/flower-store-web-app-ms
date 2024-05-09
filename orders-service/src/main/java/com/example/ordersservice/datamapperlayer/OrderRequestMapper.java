@@ -24,7 +24,6 @@ public interface OrderRequestMapper {
     CustomerDetails requestModelToEntity(CustomerDetailsRequestModel customerDetailsRequestModel);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "orderItemIdentifier", ignore = true)
     @Mapping(target="price", ignore = true)
     void updateEntity(OrderItemUpdateRequestModel orderItemUpdateRequestModel, @MappingTarget OrderItem orderItem);
 }

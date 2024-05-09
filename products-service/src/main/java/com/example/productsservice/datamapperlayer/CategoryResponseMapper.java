@@ -1,15 +1,10 @@
 package com.example.productsservice.datamapperlayer;
 
 import com.example.productsservice.datalayer.Category;
-import com.example.productsservice.presentationlayer.CategoryController;
 import com.example.productsservice.presentationlayer.CategoryResponseModel;
 import org.mapstruct.*;
-import org.springframework.hateoas.Link;
 
 import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface CategoryResponseMapper {
@@ -18,12 +13,4 @@ public interface CategoryResponseMapper {
     CategoryResponseModel entityToResponseModel(Category category);
 
     List<CategoryResponseModel> entityListToResponseModelList(List<Category> categories);
-
-    @AfterMapping
-    default void addLinks(Category category, @MappingTarget CategoryResponseModel model){
-        Link selfLink= linkTo(methodOn(CategoryController.class)
-                .getCategoryById(model.getCategoryId()))
-                .withSelfRel();
-        model.add(selfLink);
-    }
 }

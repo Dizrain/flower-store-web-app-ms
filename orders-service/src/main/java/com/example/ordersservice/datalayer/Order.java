@@ -33,6 +33,7 @@ public class Order {
     private CustomerDetails customerDetails;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
     @Valid
     private Set<OrderItem> items;
 
