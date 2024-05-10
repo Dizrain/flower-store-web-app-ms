@@ -65,7 +65,7 @@ services:
       - PMA_ARBITRARY=1
 
   products-service:
-    build: ./products-
+    build: ./products-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:

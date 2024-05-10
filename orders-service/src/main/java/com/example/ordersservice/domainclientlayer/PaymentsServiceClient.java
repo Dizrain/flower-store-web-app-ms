@@ -39,9 +39,8 @@ public class PaymentsServiceClient {
 
     public PaymentResponseModel processPayment(PaymentRequestModel paymentRequestModel) {
         try {
-            String url = PAYMENT_SERVICE_BASE_URL + "/payments";
 
-            PaymentResponseModel paymentResponseModel = restTemplate.postForObject(url,
+            PaymentResponseModel paymentResponseModel = restTemplate.postForObject(PAYMENT_SERVICE_BASE_URL,
                     paymentRequestModel, PaymentResponseModel.class);
 
             return paymentResponseModel;

@@ -98,7 +98,7 @@ public class OrderServiceClient {
     public OrderItemResponseModel updateOrderItem(String orderIdentifier, String orderItemIdentifier, OrderItemUpdateRequestModel itemUpdate) {
         try {
             restTemplate.put(ORDER_SERVICE_BASE_URL + "/" + orderIdentifier + "/items/" + orderItemIdentifier, itemUpdate);
-            return getOrderItem(orderIdentifier, itemUpdate.getItemId());
+            return getOrderItem(orderIdentifier, orderItemIdentifier);
         } catch (HttpClientErrorException e) {
             throw handleHttpClientException(e);
         }
