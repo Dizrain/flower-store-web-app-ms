@@ -32,7 +32,7 @@ public class Order {
     @Valid
     private CustomerDetails customerDetails;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     @Valid
     private Set<OrderItem> items;
