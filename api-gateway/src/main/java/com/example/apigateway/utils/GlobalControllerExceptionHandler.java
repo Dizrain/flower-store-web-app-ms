@@ -1,6 +1,7 @@
 package com.example.apigateway.utils;
 
 
+import com.example.apigateway.utils.exceptions.InvalidInputException;
 import com.example.apigateway.utils.exceptions.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,12 @@ public class GlobalControllerExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidInputException.class)
+    public HttpErrorInfo handleInvalidInputException(WebRequest request, InvalidInputException ex) {
+        return createHttpErrorInfo(HttpStatus.UNPROCESSABLE_ENTITY, request, ex);
     }
 
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
