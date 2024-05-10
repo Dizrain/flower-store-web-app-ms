@@ -18,6 +18,14 @@ spring:
     initialization-mode: always
   
   jpa:
+    properties:
+      javax:
+        persistence:
+          schema-generation:
+            scripts:
+              action: create
+              create-source: metadata
+              create-target: /tmp/create.sql
     hibernate:
       ddl-auto: none
   
