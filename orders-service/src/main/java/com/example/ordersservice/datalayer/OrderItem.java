@@ -30,4 +30,9 @@ public class OrderItem {
     @NotNull
     @Min(0)
     private Double price;
+
+    // Reference back to Order
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 }

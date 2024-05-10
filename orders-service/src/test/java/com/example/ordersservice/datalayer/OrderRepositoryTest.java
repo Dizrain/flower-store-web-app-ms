@@ -34,6 +34,7 @@ public class OrderRepositoryTest {
         item.setProductId("test-product-id");
         item.setQuantity(2);
         item.setPrice(50.0);
+        item.setOrder(order);
 
         // Add the OrderItem to the Order
         order.setItems(new HashSet<>(Arrays.asList(item)));

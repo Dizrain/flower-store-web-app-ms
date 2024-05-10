@@ -59,7 +59,11 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseModel createOrder(OrderRequestModel requestModel) {
         Order order = orderRequestMapper.requestModelToEntity(requestModel, new OrderIdentifier());
         Set<OrderItem> items = requestModel.getItems().stream()
-                .map(item -> orderRequestMapper.mapItem(item, new OrderItemIdentifier()))
+                .map(itemRequest -> {
+                    OrderItem orderItem = orderRequestMapper.mapItem(itemRequest, new OrderItemIdentifier());
+                    orderItem.setOrder(order);  // Set the order in the OrderItem
+                    return orderItem;
+                })
                 .collect(Collectors.toSet());
         order.setItems(items);
 

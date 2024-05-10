@@ -102,6 +102,7 @@ public class OrderControllerIntegrationTest {
         order.setCustomerDetails(new CustomerDetails("customer1", "Test Name", "test@example.com", "1234567890", "Test Address"));
         OrderItem orderItem = new OrderItem();
         orderItem.setOrderItemIdentifier(new OrderItemIdentifier("item1"));
+        orderItem.setOrder(order);
         orderItem.setProductId("Product 1");
         orderItem.setQuantity(2);
         orderItem.setPrice(50.0);
