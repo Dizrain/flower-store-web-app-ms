@@ -47,6 +47,8 @@ public class GlobalControllerExceptionHandler {
         return createHttpErrorInfo(HttpStatus.UNPROCESSABLE_ENTITY, request, ex);
     }
 
+
+
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(ConstraintViolationException.class)
     public Map<String, String> handleConstraintViolationExceptions(ConstraintViolationException ex) {

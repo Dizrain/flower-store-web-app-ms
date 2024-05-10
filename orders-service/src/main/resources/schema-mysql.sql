@@ -21,7 +21,7 @@ CREATE TABLE orders (
 CREATE TABLE order_items (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_item_id VARCHAR(255) NOT NULL UNIQUE,
-    order_id BIGINT NOT NULL,
+    order_id BIGINT,
     product_id VARCHAR(255) NOT NULL,
     quantity INT NOT NULL,
     price DOUBLE NOT NULL,
